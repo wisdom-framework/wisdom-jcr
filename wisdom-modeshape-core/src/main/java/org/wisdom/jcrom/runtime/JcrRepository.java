@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.WJcromConf;
-import org.wisdom.jcrom.crud.CrudFactory;
 import org.wisdom.jcrom.crud.JcromCrud;
 
 import javax.jcr.RepositoryException;
@@ -34,7 +33,6 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     private Collection<ServiceRegistration> registrations = new ArrayList<>();
     private Collection<JcromCrud<?, ?>> crudServices = new ArrayList<>();
-    private Map<Class, CrudFactory> crudMapFactory = new HashMap<>();
 
 
     public JcrRepository(WJcromConf conf, RepositoryFactory repositoryFactory) throws RepositoryException {
@@ -59,11 +57,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     protected void addCrudService(Class entity) throws RepositoryException {
         jcrom.map(entity);
         JcromCrudService<? extends AbstractEntity> jcromCrudService;
-        if (crudMapFactory.containsKey(entity)) {
-            jcromCrudService = crudMapFactory.get(entity).createCrud(this);
-        } else {
-            jcromCrudService = new JcromCrudService<AbstractEntity>(this, entity);
-        }
+        jcromCrudService = new JcromCrudService<AbstractEntity>(this, entity);
         crudServices.add(jcromCrudService);
     }
 
@@ -121,9 +115,5 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     @Override
     public javax.jcr.Repository get() {
         return repository;
-    }
-
-    public Map<Class, CrudFactory> getCrudMapFactory() {
-        return crudMapFactory;
     }
 }
