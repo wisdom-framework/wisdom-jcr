@@ -2,6 +2,7 @@ package org.wisdom.jcrom.runtime;
 
 import com.dooapp.cloud.common.model.AbstractEntity;
 import org.jcrom.JcrMappingException;
+import org.jcrom.annotations.JcrNode;
 import org.jcrom.dao.AbstractJcrDAO;
 import org.jcrom.util.NodeFilter;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by antoine on 14/07/2014.
  */
-public class JcromCrudService<T extends AbstractEntity> implements JcromCrud<T, String> {
+public class JcromCrudService<T> implements JcromCrud<T, String> {
 
     private Logger logger = LoggerFactory.getLogger(JcromCrudService.class);
 
@@ -71,7 +72,7 @@ public class JcromCrudService<T extends AbstractEntity> implements JcromCrud<T, 
 
     @Override
     public T delete(T t) {
-        dao.remove(t.getPath());
+        dao.remove(repository.getJcrom().getPath(t));
         return t;
     }
 
@@ -87,31 +88,11 @@ public class JcromCrudService<T extends AbstractEntity> implements JcromCrud<T, 
 
     @Override
     public T save(T t) {
-        String defaultPath = t.getClass().getSimpleName().toLowerCase() + "s";
-        try {
-            if (!repository.getSession().getRootNode().hasNode(defaultPath)) {
-                repository.getSession().getRootNode().addNode(defaultPath);
+        String path = repository.getJcrom().getPath(t);
+        if (path != null) {
+            if (exists(path)) {
+                return dao.update(t);
             }
-        } catch (RepositoryException e) {
-            logger.warn(e.getMessage(), e);
-        }
-        return updateOrCreate(t);
-    }
-
-    protected T updateOrCreate(T t) {
-        String defaultPath = t.getClass().getSimpleName().toLowerCase() + "s";
-
-        if (t.getPath() != null) {
-            if (t.getUuid() != null) {
-                if (exists(t.getPath())) {
-                    return dao.update(t);
-                }
-            } else {
-                t.setUuid(UUID.randomUUID().toString());
-            }
-        } else {
-            t.setPath(defaultPath);
-            t.setUuid(UUID.randomUUID().toString());
         }
         return dao.create(t);
     }
@@ -122,8 +103,9 @@ public class JcromCrudService<T extends AbstractEntity> implements JcromCrud<T, 
     }
 
     @Override
-    public T findOne(String s) {
-        QueryResult r = executeQuery(findOneQuery("cloud:" + entityClass.getSimpleName().toLowerCase(), s));
+    public T findOne(String name) {
+        String nodeType = entityClass.getAnnotation(JcrNode.class).nodeType();
+        QueryResult r = executeQuery(findOneQuery(nodeType, name));
         try {
             return readResult(r.getRows(), null).get(0);
         } catch (RepositoryException e) {
@@ -146,7 +128,8 @@ public class JcromCrudService<T extends AbstractEntity> implements JcromCrud<T, 
 
     @Override
     public Iterable<T> findAll() {
-        QueryResult r = executeQuery(findAllQuery("cloud:" + entityClass.getSimpleName().toLowerCase()));
+        String nodeType = entityClass.getAnnotation(JcrNode.class).nodeType();
+        QueryResult r = executeQuery(findAllQuery(nodeType));
         try {
             return readResult(r.getRows(), null);
         } catch (RepositoryException e) {
@@ -257,10 +240,5 @@ public class JcromCrudService<T extends AbstractEntity> implements JcromCrud<T, 
             list.add(newInstance);
         }
         return list;
-    }
-
-
-    public String getDefaultPath() {
-        return "";
     }
 }
