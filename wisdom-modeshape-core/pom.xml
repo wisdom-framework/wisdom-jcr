@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>wisdom-modeshape</artifactId>
+        <groupId>org.wisdom-framework</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>wisdom-modeshape-core</artifactId>
+    <packaging>wisdom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Define all the versions of the dependencies provided by Wisdom -->
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-bom</artifactId>
+                <version>${wisdom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-maven-plugin</artifactId>
+                <version>${wisdom.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <libraries>
+                        <includes>
+                            <include>org.modeshape:modeshape-jcr</include>
+                            <include>org.modeshape:modeshape-jcr-api</include>
+                            <include>org.modeshape:modeshape-common</include>
+                            <include>org.modeshape:modeshape-jdbc</include>
+                            <include>org.infinispan:infinispan-cachestore-jdbc</include>
+                            <include>c3p0:c3p0</include>
+                            <include>com.h2database:h2</include>
+                            <include>mysql:mysql-connector-java</include>
+                            <include>joda-time:joda-time</include>
+                            <include>javax.jcr:jcr</include>
+                            <include>org.jcrom:jcrom</include>
+                            <include>org.glassfish.hk2.external:javax.inject</include>
+                            <include>com.google.guava:guava:17.0</include>
+                            <include>com.google.inject:guice</include>
+                        </includes>
+                        <excludeFromApplication>true</excludeFromApplication>
+                    </libraries>
+                    <disableDistributionPackaging>true</disableDistributionPackaging>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <property>
+                                    <name>listener</name>
+                                    <value>org.wisdom.test.WisdomRunListener</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
