@@ -1,0 +1,119 @@
+<!--
+  #%L
+  Wisdom-Framework
+  %
+  Copyright (C) 2013 - 2014 Wisdom Framework
+  %
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Wisdom - JPA - TodoList sample</title>
+    <meta charset="UTF-8" http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/libs/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        #newTodo {
+            margin-bottom: 10px;
+        }
+        #newTodo > textarea{
+            width: 100%;
+            border: 1px solid #ddd;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+        .done {
+            text-decoration: line-through;
+        }
+
+        .todos > ul{
+            margin-top: 5px;
+            margin-right: 8px;
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+        }
+
+        .li-todos{
+            width: 100%;
+            padding-left: 0.5em;
+            display: inline-block;
+        }
+        .li-todos:hover{
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+        .li-todos > button{
+            margin-top: 0.33em;
+            margin-right: 0.5em;
+        }
+        .li-todos > textarea{
+            background-color: inherit;
+            border: 0px;
+            width: 80%;
+            resize: none;
+        }
+        .li-todos > input[type=checkbox] {
+            -moz-appearance: none;
+            height: 23px;
+            width: 23px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class='container-fuild' id="listContainer">
+    Loading Todo lists....
+</div>
+
+<script src="/libs/jquery.min.js"></script>
+<script src="/assets/libs/h-ubu-1.0.1-SNAPSHOT.js"></script>
+<!-- The ractive version must match the one used in the plugin -->
+<script src='http://cdn.ractivejs.org/0.6.1/ractive.min.js'></script>
+<script src="/assets/libs/ractive-events-keys.js"></script>
+<script src="/assets/app/render/RenderService.js"></script>
+<script src="/assets/app/render/RactiveRenderService.js"></script>
+<script src="/assets/app/render/comp/RactiveRender.js"></script>
+
+<!-- Views -->
+<script src="/assets/app/views/list.js"></script>
+
+<!-- Controllers -->
+<script src="/assets/app/TodoListController.js"></script>
+
+<!-- App -->
+<script>
+    var listModel = {};
+
+    //Start the app!
+    jQuery(document).ready(function() {
+        hub.registerComponent(new RactiveRender(), {
+            model: listModel,
+            template: "list",
+            container: 'listContainer',
+            name: 'TodoListRender'
+        }).registerComponent(new TodoListController(), {
+            model: listModel,
+            name: 'TodoListController'
+        }).start();
+    });
+</script>
+</body>
+
+</html>

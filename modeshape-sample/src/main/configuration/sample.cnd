@@ -1,0 +1,5 @@
+<sample='http://www.wisdom-framework.org/jcr/sample'>
+
+[sample:todo] > nt:unstructured
+
+[sample:todolist] > nt:unstructured

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.wisdom-framework.jcr</groupId>
+    <artifactId>modeshape-sample</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <packaging>wisdom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-modeshape</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-jcr-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.bundles</groupId>
+            <artifactId>ow2-bundles-externals-commons-collections</artifactId>
+            <version>1.0.36</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2.external</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Define all the versions of the dependencies provided by Wisdom -->
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-bom</artifactId>
+                <version>0.7.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-maven-plugin</artifactId>
+                <version>0.7.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <libraries>
+                        <includes>
+                            <include>org.modeshape:modeshape-jcr</include>
+                            <include>org.modeshape:modeshape-jcr-api</include>
+                            <include>org.modeshape:modeshape-common</include>
+                            <include>org.modeshape:modeshape-jdbc</include>
+                            <include>org.infinispan:infinispan-cachestore-jdbc</include>
+                            <include>c3p0:c3p0</include>
+                            <include>com.h2database:h2</include>
+                            <include>mysql:mysql-connector-java</include>
+                            <include>joda-time:joda-time</include>
+                            <include>javax.jcr:jcr</include>
+                            <include>org.jcrom:jcrom</include>
+                            <include>org.glassfish.hk2.external:javax.inject</include>
+                            <include>com.google.guava:guava:17.0</include>
+                            <include>com.google.inject:guice</include>
+                        </includes>
+                        <excludeFromApplication>true</excludeFromApplication>
+                    </libraries>
+                    <disableDistributionPackaging>true</disableDistributionPackaging>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <property>
+                                    <name>listener</name>
+                                    <value>org.wisdom.test.WisdomRunListener</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-ractivejs-maven-plugin</artifactId>
+                <version>0.1.4</version>
+                <executions>
+                    <execution>
+                        <id>compile-ractivejs-files</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile-ractivejs</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <!-- should not be deployed -->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

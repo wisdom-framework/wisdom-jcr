@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-md-4 col-md-push-4">
+        <div class="page-header">
+            <h1 class="text-center">{{name}}<span class="badge">{{notDone(todos)}}</span></h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 col-md-push-4" id="newTodo">
+        <textarea on-enter="newTodo" placeholder="Press Enter to add a TODO" autofocus/>
+    </div>
+</div>
+
+<div class="row>">
+
+    <div class="col-md-4 col-md-push-4 todos">
+        <ul class="list-unstyled">
+            {{#todos:index}}
+            <li class="li-todos">
+                <input type='checkbox' checked='{{done}}' on-click='updateTodo'>
+                <textarea rows="1" class="{{done ? 'done' : ''}}" id="{{id}}" on-enter="updateTodo" value="{{content}}" />
+                <button type="button" class="btn btn-danger btn-xs pull-right" on-click="delTodo:{{index}}">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </li>
+            {{/todos}}
+        </ul>
+    </div>
+
+</div>

@@ -4,16 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.wisdom-framework</groupId>
-    <artifactId>wisdom-modeshape</artifactId>
+    <parent>
+        <groupId>org.wisdom-framework</groupId>
+        <artifactId>wisdom-framework</artifactId>
+        <version>0.7.0</version>
+    </parent>
+
+    <artifactId>wisdom-jcr</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
-    <name>wisdom-modeshape</name>
-    <description>Wisdom-Modeshape wisdom framework sub-project parent pom.</description>
+
+    <name>wisdom-jcr</name>
+
+    <description>JCR support for Wisdom-Framework</description>
 
     <modules>
-        <module>wisdom-modeshape-core</module>
+        <module>wisdom-jcr-core</module>
+        <module>wisdom-modeshape</module>
+        <module>modeshape-sample</module>
     </modules>
 
     <licenses>
@@ -24,9 +33,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/agonist/wisdom-modeshape</url>
-        <connection>scm:git:git@github.com:agonist/wisdom-modeshape.git</connection>
-        <developerConnection>scm:git:git@github.com:agonist/wisdom-modeshape.git</developerConnection>
+        <url>https://github.com/agonist/wisdom-jcr</url>
+        <connection>scm:git:git@github.com:agonist/wisdom-jcr.git</connection>
+        <developerConnection>scm:git:git@github.com:agonist/wisdom-jcr.git</developerConnection>
     </scm>
 
     <properties>
@@ -37,70 +46,4 @@
         <jcrom.version>2.1.0</jcrom.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.wisdom-framework</groupId>
-            <artifactId>wisdom-api</artifactId>
-            <version>${wisdom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-            <version>1.12.1</version>
-        </dependency>
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>org.wisdom-framework</groupId>
-            <artifactId>wisdom-test</artifactId>
-            <version>${wisdom.version}</version>
-        </dependency>
-        <dependency>
-            <!-- slf4j binding used for tests -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jcl</artifactId>
-            <version>1.7.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-jcr</artifactId>
-            <version>${modeshape.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-jdbc</artifactId>
-            <version>${modeshape.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jcrom</groupId>
-            <artifactId>jcrom</artifactId>
-            <version>${jcrom.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.bundles</groupId>
-            <artifactId>ow2-bundles-externals-commons-collections</artifactId>
-            <version>1.0.36</version>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.2.124</version>
-        </dependency>
-
-    </dependencies>
 </project>

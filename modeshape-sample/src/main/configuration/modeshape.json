@@ -1,0 +1,4 @@
+{
+  "name": "sample-repository-dev",
+  "node-types": ["conf/sample.cnd"]
+}
