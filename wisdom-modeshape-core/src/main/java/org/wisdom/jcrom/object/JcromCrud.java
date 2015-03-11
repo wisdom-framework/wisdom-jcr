@@ -1,4 +1,4 @@
-package org.wisdom.jcrom.crud;
+package org.wisdom.jcrom.object;
 
 import org.wisdom.api.model.Crud;
 

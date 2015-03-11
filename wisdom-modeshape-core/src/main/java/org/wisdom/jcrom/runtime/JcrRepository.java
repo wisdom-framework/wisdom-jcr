@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.WJcromConf;
-import org.wisdom.jcrom.crud.JcromCrud;
+import org.wisdom.jcrom.object.JcromCrud;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;

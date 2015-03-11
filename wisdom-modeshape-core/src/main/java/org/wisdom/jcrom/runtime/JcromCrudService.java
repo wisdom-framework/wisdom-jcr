@@ -10,7 +10,7 @@ import org.wisdom.api.model.EntityFilter;
 import org.wisdom.api.model.FluentTransaction;
 import org.wisdom.api.model.Repository;
 import org.wisdom.api.model.TransactionManager;
-import org.wisdom.jcrom.crud.JcromCrud;
+import org.wisdom.jcrom.object.JcromCrud;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
