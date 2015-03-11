@@ -1,6 +1,5 @@
 package org.wisdom.jcrom.runtime;
 
-import com.dooapp.cloud.common.model.AbstractEntity;
 import org.jcrom.JcrMappingException;
 import org.jcrom.annotations.JcrNode;
 import org.jcrom.dao.AbstractJcrDAO;
@@ -21,11 +20,10 @@ import javax.jcr.query.RowIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
 /**
- * Created by antoine on 14/07/2014.
+ * CRUD Service Implementation using Jcrom
  */
 public class JcromCrudService<T> implements JcromCrud<T, String> {
 
@@ -83,7 +81,12 @@ public class JcromCrudService<T> implements JcromCrud<T, String> {
 
     @Override
     public Iterable<T> delete(Iterable<T> ts) {
-        return null;
+        List<T> deleted = new ArrayList<>();
+
+        for (T toDelete : ts) {
+            deleted.add(delete(toDelete));
+        }
+        return deleted;
     }
 
     @Override
@@ -99,7 +102,12 @@ public class JcromCrudService<T> implements JcromCrud<T, String> {
 
     @Override
     public Iterable<T> save(Iterable<T> ts) {
-        return null;
+        List<T> saved = new ArrayList<>();
+
+        for (T tosave : ts) {
+            saved.add(save(tosave));
+        }
+        return saved;
     }
 
     @Override
@@ -118,6 +126,11 @@ public class JcromCrudService<T> implements JcromCrud<T, String> {
 
     @Override
     public T findOne(EntityFilter<T> tEntityFilter) {
+        for (T entity : findAll()) {
+            if (tEntityFilter.accept(entity)) {
+                return entity;
+            }
+        }
         return null;
     }
 
@@ -139,17 +152,30 @@ public class JcromCrudService<T> implements JcromCrud<T, String> {
     }
 
     protected T getEntity(String path, NodeFilter filter) {
-        return (T) dao.get(path, filter);
+        return dao.get(path, filter);
     }
 
     @Override
     public Iterable<T> findAll(Iterable<String> strings) {
-        return null;
+        List<T> entities = new ArrayList<>();
+
+        for (String ids : strings) {
+            entities.add(findOne(ids));
+        }
+        return entities;
     }
 
     @Override
     public Iterable<T> findAll(EntityFilter<T> tEntityFilter) {
-        return null;
+        List<T> entities = new ArrayList<>();
+
+        for (T entity : findAll()) {
+            if (tEntityFilter.accept(entity)) {
+                entities.add(entity);
+            }
+        }
+
+        return entities;
     }
 
     @Override
@@ -164,27 +190,27 @@ public class JcromCrudService<T> implements JcromCrud<T, String> {
 
     @Override
     public void executeTransactionalBlock(Runnable runnable) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <A> A executeTransactionalBlock(Callable<A> aCallable) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public TransactionManager getTransactionManager() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <R> FluentTransaction<R> transaction() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <R> FluentTransaction<R>.Intermediate transaction(Callable<R> callable) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

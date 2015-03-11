@@ -46,12 +46,12 @@
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-jcr</artifactId>
-            <version>4.1.0.Final</version>
+            <version>4.2.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-jdbc</artifactId>
-            <version>4.1.0.Final</version>
+            <version>4.2.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.bundles</groupId>
@@ -93,23 +93,5 @@
             <artifactId>jcrom</artifactId>
             <version>2.1.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.dooapp</groupId>
-            <artifactId>cloud-common-model</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>dooapp-nexus</id>
-            <name>dooapp-artifactory-releases</name>
-            <url>http://nexus.jack.dooapp.com/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>dooapp-nexus</id>
-            <name>dooapp-artifactory-snapshots</name>
-            <url>http://nexus.jack.dooapp.com/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

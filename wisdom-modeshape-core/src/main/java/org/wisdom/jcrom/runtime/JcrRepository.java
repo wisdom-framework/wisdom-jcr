@@ -1,6 +1,5 @@
 package org.wisdom.jcrom.runtime;
 
-import com.dooapp.cloud.common.model.AbstractEntity;
 import org.jcrom.Jcrom;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -56,8 +55,8 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     protected void addCrudService(Class entity) throws RepositoryException {
         jcrom.map(entity);
-        JcromCrudService<? extends AbstractEntity> jcromCrudService;
-        jcromCrudService = new JcromCrudService<AbstractEntity>(this, entity);
+        JcromCrudService<? extends Object> jcromCrudService;
+        jcromCrudService = new JcromCrudService<Object>(this, entity);
         crudServices.add(jcromCrudService);
     }
 

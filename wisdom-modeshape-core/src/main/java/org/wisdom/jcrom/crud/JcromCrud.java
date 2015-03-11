@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by antoine on 14/07/2014.
+ * A crud which add some functionnality to the basic crud
  */
 public interface JcromCrud<T, I extends Serializable> extends Crud<T, I> {
 

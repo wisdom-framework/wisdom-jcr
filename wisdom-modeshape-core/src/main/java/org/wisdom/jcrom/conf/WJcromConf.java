@@ -29,23 +29,10 @@ public class WJcromConf {
     }
 
     /**
-     * Extract all WJcromConf configuration from the parent configuration.
-     * If the configuration is
-     * org.wisdom.jcrom.default.url = "plocal:/home/wisdom/db"
-     * org.wisdom.jcrom.test.url = "plocal:/home/wisdom/test/db"
-     * <p/>
-     * the sub configuration will be:
-     * <p/>
-     * [alias:default]
-     * url = "plocal:/home/wisdom/db"
-     * [alias:test]
-     * url = "plocal:/home/wisdom/test/db"
-     *
-     * @param config
-     * @return
+     * Extract jcrom package from the configuration
      */
     public static Collection<WJcromConf> createFromApplicationConf(ApplicationConfiguration config) {
-        Configuration jcrom = config.getConfiguration(JCROM_PREFIX);
+            Configuration jcrom = config.getConfiguration(JCROM_PREFIX);
 
         if (jcrom == null) {
             return Collections.EMPTY_SET;
