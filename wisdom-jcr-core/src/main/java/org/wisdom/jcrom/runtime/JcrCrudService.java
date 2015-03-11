@@ -59,7 +59,6 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     protected AbstractJcrDAO<T> dao;
 
-
     /**
      * Flag used in order to know if the instance is used during a transaction in the current thread.
      */
@@ -143,7 +142,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     @Override
     public T findOne(String name) {
-        QueryResult r = executeQuery(findOneQuery(nodeType, name));
+        QueryResult r = executeJcrSql2Query(findOneQuery(nodeType, name));
         try {
             return readResult(r.getRows(), null).get(0);
         } catch (RepositoryException e) {
@@ -165,13 +164,19 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     }
 
     @Override
-    public boolean exists(String s) {
-        return dao.exists(s);
+    public boolean exists(String name) {
+        QueryResult r = executeJcrSql2Query(findOneQuery(nodeType, name));
+        try {
+            return r.getRows().getSize() > 0;
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage(), e);
+            return false;
+        }
     }
 
     @Override
     public Iterable<T> findAll() {
-        QueryResult r = executeQuery(findAllQuery(nodeType));
+        QueryResult r = executeJcrSql2Query(findAllQuery(nodeType));
         try {
             return readResult(r.getRows(), null);
         } catch (RepositoryException e) {
@@ -209,7 +214,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     @Override
     public long count() {
-        QueryResult r = executeQuery(findAllQuery(nodeType));
+        QueryResult r = executeJcrSql2Query(findAllQuery(nodeType));
         try {
             return r.getRows().getSize();
         } catch (RepositoryException e) {
@@ -249,8 +254,8 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     }
 
     @Override
-    public T findOneByQuery(String query) {
-        QueryResult r = executeQuery(query);
+    public T findOneByQuery(String query, String language) {
+        QueryResult r = executeQuery(query, language);
         try {
             return readResult(r.getRows(), null).get(0);
         } catch (RepositoryException e) {
@@ -262,8 +267,8 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     }
 
     @Override
-    public List<T> findByQuery(String query) {
-        QueryResult r = executeQuery(query);
+    public List<T> findByQuery(String query, String language) {
+        QueryResult r = executeQuery(query, language);
         try {
             return readResult(r.getRows(), null);
         } catch (RepositoryException e) {
@@ -274,10 +279,10 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         return null;
     }
 
-    protected QueryResult executeQuery(String querry) {
+    protected QueryResult executeQuery(String statement, String language) {
         try {
             javax.jcr.query.QueryManager queryManager = repository.getSession().getWorkspace().getQueryManager();
-            Query query = queryManager.createQuery(querry, Query.JCR_SQL2);
+            Query query = queryManager.createQuery(statement, language);
             return query.execute();
         } catch (RepositoryException e) {
             throw new JcrMappingException("Could not find nodes by SQL", e);
@@ -294,4 +299,9 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         }
         return list;
     }
+
+    protected QueryResult executeJcrSql2Query(String statement) {
+        return executeQuery(statement, Query.JCR_SQL2);
+    }
+
 }

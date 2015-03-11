@@ -29,8 +29,8 @@ import java.util.List;
  */
 public interface JcrCrud<T, I extends Serializable> extends Crud<T, I> {
 
-    public T findOneByQuery(String query);
+    public T findOneByQuery(String statement, String language);
 
-    public List<T> findByQuery(String query);
+    public List<T> findByQuery(String statement, String language);
 
 }

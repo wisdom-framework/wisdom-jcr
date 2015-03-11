@@ -73,4 +73,5 @@ public class JcromConfiguration {
     public String getNameSpace() {
         return nameSpace;
     }
+
 }
