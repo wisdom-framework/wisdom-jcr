@@ -60,13 +60,10 @@ public class ModeshapeRepositoryFactory implements RepositoryFactory {
         RepositoryConfiguration config = null;
 
         if (applicationConfiguration.isTest()) {
-            logger.info("~~~~~~~TEST MODE ~~~~~~");
             config = getModeshapeConfiguration("test");
         } else if (applicationConfiguration.isDev()) {
-            logger.info("~~~~~~~DEV MODE ~~~~~~");
             config = getModeshapeConfiguration("dev");
         } else if (applicationConfiguration.isProd()) {
-            logger.info("~~~~~~~PROD MODE ~~~~~~");
             config = getModeshapeConfiguration("prod");
         }
         repository = engine.deploy(config);
@@ -74,8 +71,9 @@ public class ModeshapeRepositoryFactory implements RepositoryFactory {
 
 
     private RepositoryConfiguration getModeshapeConfiguration(String env) throws ParsingException, FileNotFoundException {
-        return RepositoryConfiguration.read(new File(new File(applicationConfiguration.getBaseDir(), "conf"),
-                applicationConfiguration.getConfiguration(MODESHAPE_CFG).get(env)));
+        File file = new File(new File(applicationConfiguration.getBaseDir(), "conf"), applicationConfiguration.getConfiguration(MODESHAPE_CFG).get(env));
+        logger.info("Reading modeshape configuration file: " + file.toURI().toString());
+        return RepositoryConfiguration.read(file);
     }
 
     @Invalidate
