@@ -47,26 +47,10 @@
             <artifactId>wisdom-jcr-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.ow2.bundles</groupId>
-            <artifactId>ow2-bundles-externals-commons-collections</artifactId>
-            <version>1.0.36</version>
-        </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
         </dependency>
     </dependencies>
 
@@ -96,17 +80,8 @@
                             <include>org.modeshape:modeshape-jcr</include>
                             <include>org.modeshape:modeshape-jcr-api</include>
                             <include>org.modeshape:modeshape-common</include>
-                            <include>org.modeshape:modeshape-jdbc</include>
-                            <include>org.infinispan:infinispan-cachestore-jdbc</include>
-                            <include>c3p0:c3p0</include>
-                            <include>com.h2database:h2</include>
-                            <include>mysql:mysql-connector-java</include>
                             <include>joda-time:joda-time</include>
-                            <include>javax.jcr:jcr</include>
                             <include>org.jcrom:jcrom</include>
-                            <include>org.glassfish.hk2.external:javax.inject</include>
-                            <include>com.google.guava:guava:17.0</include>
-                            <include>com.google.inject:guice</include>
                         </includes>
                         <excludeFromApplication>true</excludeFromApplication>
                     </libraries>
