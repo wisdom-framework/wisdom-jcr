@@ -114,6 +114,13 @@
                     <disableDistributionPackaging>true</disableDistributionPackaging>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <!-- should not be deployed -->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
