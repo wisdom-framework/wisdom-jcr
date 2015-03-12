@@ -1,0 +1,23 @@
+{
+  "name": "wisdom-jcr",
+  "version":"1.0.0-SNAPSHOT",
+  "description": "This project integrates JCR repositories within Wisdom-Framework.The Wisdom-JCR project relies on JCROM to map objects between Wisdom and the JCR repository.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agonist/wisdom-jcr"
+  },
+
+  "author": "The Wisdom Team",
+  "license": {
+    "type": "Apache",
+    "url": "https://github.com/wisdom-framework/wisdom/blob/master/LICENSE.txt"
+  },
+  "homepage": "https://github.com/agonist/wisdom-jcr",
+  "keywords": [
+    "jcr",
+    "repository",
+    "jcrom" ,
+    "modeshape",
+    "db"
+  ]
+}
