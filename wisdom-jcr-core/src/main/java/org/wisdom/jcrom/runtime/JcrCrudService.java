@@ -122,8 +122,9 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     @Override
     public T save(T t) {
         String path = repository.getJcrom().getPath(t);
+        String name = repository.getJcrom().getName(t);
         if (path != null) {
-            if (exists(path)) {
+            if (exists(name)) {
                 return dao.update(t);
             }
         }
