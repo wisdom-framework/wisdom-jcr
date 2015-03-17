@@ -84,10 +84,10 @@
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <!-- should not be deployed -->
-                    <skip>true</skip>
-                </configuration>
+                <!--<configuration>-->
+                    <!--&lt;!&ndash; should not be deployed &ndash;&gt;-->
+                    <!--<skip>true</skip>-->
+                <!--</configuration>-->
             </plugin>
         </plugins>
     </build>
