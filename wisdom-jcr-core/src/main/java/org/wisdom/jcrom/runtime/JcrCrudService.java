@@ -23,6 +23,7 @@ import org.jcrom.JcrMappingException;
 import org.jcrom.annotations.JcrNode;
 import org.jcrom.dao.AbstractJcrDAO;
 import org.jcrom.util.NodeFilter;
+import org.jcrom.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.model.EntityFilter;
@@ -74,7 +75,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         this.entityClass = entityClass;
         dao = new AbstractJcrDAO<T>(entityClass, repository.getSession(), repository.getJcrom()) {
         };
-        JcrNode jcrNode = entityClass.getAnnotation(JcrNode.class);
+        JcrNode jcrNode = ReflectionUtils.getJcrNodeAnnotation(entityClass);
         if (jcrNode != null) {
             nodeType = jcrNode.nodeType();
         }
