@@ -67,6 +67,8 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<Collection<Jcr
         context = bundleContext;
     }
 
+    JcrRepository repo = null;
+
     @Validate
     private void start() {
         confs = JcromConfiguration.createFromApplicationConf(applicationConfiguration);
@@ -95,13 +97,13 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<Collection<Jcr
             Enumeration<URL> enums = bundle.findEntries(packageNameToPath(conf.getNameSpace()), "*.class", true);
 
             if (enums == null || !enums.hasMoreElements()) {
-                break; //next configuration
+                continue; //next configuration
             }
 
-            //Create a pull for this configuration
-            JcrRepository repo = null;
             try {
-                repo = new JcrRepository(conf, repositoryFactory, applicationConfiguration);
+                if (repo == null) {
+                    repo = new JcrRepository(conf, repositoryFactory, applicationConfiguration);
+                }
             } catch (Exception e) {
                 logger.error("Cannot access to jcr repository " + conf.getAlias(), e);
             }
