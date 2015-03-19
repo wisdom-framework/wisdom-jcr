@@ -24,6 +24,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.JcromConfiguration;
@@ -51,18 +52,26 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     private Collection<ServiceRegistration> registrations = new ArrayList<>();
     private Collection<JcrCrud<?, ?>> crudServices = new ArrayList<>();
+    private ApplicationConfiguration applicationConfiguration;
 
-
-    public JcrRepository(JcromConfiguration conf, RepositoryFactory repositoryFactory) throws RepositoryException {
+    public JcrRepository(JcromConfiguration conf, RepositoryFactory repositoryFactory, ApplicationConfiguration applicationConfiguration) throws RepositoryException {
         Map<String, String> parameters = new HashMap<String, String>();
         Thread.currentThread().setContextClassLoader(repositoryFactory.getClass().getClassLoader());
         logger.info("Loading JCR repository using " + repositoryFactory);
         this.repository = repositoryFactory.getRepository(parameters);
-        this.jcrom = new Jcrom();
+        this.applicationConfiguration = applicationConfiguration;
+        this.jcrom = new Jcrom(true, dynamicInstanciation());
         this.conf = conf;
         addCrudFactory();
         Thread.currentThread().setContextClassLoader(JcrRepository.class.getClassLoader());
         this.session = repository.login();
+    }
+
+    public boolean dynamicInstanciation() {
+        if (applicationConfiguration.getConfiguration("jcrom").getConfiguration("conf") == null) {
+            return false;
+        }
+        return applicationConfiguration.getConfiguration("jcrom").getConfiguration("conf").get("dynamicInstanciation").equals("true");
     }
 
     public JcromConfiguration getConf() {

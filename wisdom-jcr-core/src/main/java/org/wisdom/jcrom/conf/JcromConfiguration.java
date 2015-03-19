@@ -51,7 +51,7 @@ public class JcromConfiguration {
      * Extract jcrom package from the configuration
      */
     public static Collection<JcromConfiguration> createFromApplicationConf(ApplicationConfiguration config) {
-        Configuration jcrom = config.getConfiguration(JCROM_PREFIX);
+        Configuration jcrom = config.getConfiguration(JCROM_PREFIX).getConfiguration("packages");
 
         if (jcrom == null) {
             return Collections.EMPTY_SET;

@@ -101,7 +101,7 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<Collection<Jcr
             //Create a pull for this configuration
             JcrRepository repo = null;
             try {
-                repo = new JcrRepository(conf, repositoryFactory);
+                repo = new JcrRepository(conf, repositoryFactory, applicationConfiguration);
             } catch (Exception e) {
                 logger.error("Cannot access to jcr repository " + conf.getAlias(), e);
             }
