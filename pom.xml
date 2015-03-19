@@ -23,6 +23,7 @@
         <module>wisdom-jcr-core</module>
         <module>wisdom-modeshape</module>
         <module>modeshape-sample</module>
+        <module>wisdom-modeshape-web-jcr-rest</module>
     </modules>
 
     <licenses>
@@ -44,7 +45,27 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <modeshape.version>4.2.0.Final</modeshape.version>
         <jcrom.version>2.1.0</jcrom.version>
+        <jettison.version>1.3.1</jettison.version>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.codehaus.jettison</groupId>
+                <artifactId>jettison</artifactId>
+                <version>${jettison.version}</version>
+                <exclusions>
+                    <!-- This results in duplicate stax-api jars. This is the older one.
+                         A newer is brought in by com.sun.xml.bind:jaxb-impl
+                    -->
+                    <exclusion>
+                        <groupId>stax</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <distributionManagement>
         <repository>
             <id>dooapp-nexus</id>
