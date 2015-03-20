@@ -21,7 +21,8 @@ package org.wisdom.jcr.modeshape;
 
 import org.apache.felix.ipojo.annotations.*;
 import org.infinispan.schematic.document.ParsingException;
-import org.modeshape.jcr.JcrRepositoriesContainer;
+import org.modeshape.jcr.ModeShapeEngine;
+import org.modeshape.jcr.RepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
@@ -54,54 +55,64 @@ public class ModeshapeRepositoryFactory implements RepositoryFactory {
     /**
      * The container which hold the engine and which is responsible for initializing & returning the repository.
      */
-    private final JcrRepositoriesContainer container = new JcrRepositoriesContainer();
+    private final ModeShapeEngine engine = new ModeShapeEngine();
 
     private String defaultName;
 
-    private String defaultUrl;
+    private File defaultFile;
 
     @Validate
-    private void start() throws ParsingException, FileNotFoundException, RepositoryException, InterruptedException {
+    private void start() throws RepositoryException, InterruptedException {
+        engine.start();
         defaultName = applicationConfiguration.getConfiguration(MODESHAPE_CFG).get("name");
         if (applicationConfiguration.isTest()) {
-            defaultUrl = getModeshapeConfiguration("test");
+            defaultFile = getModeshapeConfiguration("test");
         } else if (applicationConfiguration.isDev()) {
-            defaultUrl = getModeshapeConfiguration("dev");
+            defaultFile = getModeshapeConfiguration("dev");
         } else if (applicationConfiguration.isProd()) {
-            defaultUrl = getModeshapeConfiguration("prod");
+            defaultFile = getModeshapeConfiguration("prod");
         }
     }
 
 
-    private String getModeshapeConfiguration(String env) throws ParsingException, FileNotFoundException {
+    private File getModeshapeConfiguration(String env) {
         File file = new File(new File(applicationConfiguration.getBaseDir(), "conf"), applicationConfiguration.getConfiguration(MODESHAPE_CFG).get(env));
         logger.info("Reading modeshape configuration file: " + file.toURI().toString());
-        return file.toURI().toString();
+        return file;
     }
 
     @Invalidate
     private void stop() {
-        container.shutdown();
+        engine.shutdown();
     }
 
     @Override
     public Repository getRepository(Map parameters) throws RepositoryException {
         fillParametersFromConfiguration(parameters);
-        return container.getRepository(null, parameters);
+        String name = (String) parameters.get(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME);
+        if (!engine.getRepositoryNames().contains(name)) {
+            try {
+                engine.deploy(RepositoryConfiguration.read(defaultFile));
+            } catch (ParsingException e) {
+                logger.error(e.getMessage(),e );
+            } catch (FileNotFoundException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return engine.getRepository(name);
     }
 
     private void fillParametersFromConfiguration(Map parameters) {
         if (!parameters.containsKey(org.modeshape.jcr.api.RepositoryFactory.URL)) {
-            parameters.put(org.modeshape.jcr.api.RepositoryFactory.URL, defaultUrl);
+            parameters.put(org.modeshape.jcr.api.RepositoryFactory.URL, defaultFile.toURI().toString());
         }
         if (!parameters.containsKey(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME)) {
             parameters.put(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME, defaultName);
         }
     }
 
-    public Set<String> getRepositoryNames(Map<?, ?> parameters) throws RepositoryException {
-        fillParametersFromConfiguration(parameters);
-        return container.getRepositoryNames(parameters);
+    public Set<String> getRepositoryNames() throws RepositoryException {
+        return engine.getRepositoryNames();
     }
 
 }

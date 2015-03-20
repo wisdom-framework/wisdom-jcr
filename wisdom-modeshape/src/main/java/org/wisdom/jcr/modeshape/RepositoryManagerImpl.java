@@ -122,7 +122,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
     @Override
     public Set<String> getJcrRepositoryNames() {
         try {
-            return ((ModeshapeRepositoryFactory) repositoryFactory).getRepositoryNames(Collections.unmodifiableMap(new HashMap<Object, Object>()));
+            return ((ModeshapeRepositoryFactory) repositoryFactory).getRepositoryNames();
         } catch (RepositoryException e) {
             LOGGER.error(WebJcrI18n.cannotLoadRepositoryNames.text(), e);
             return Collections.emptySet();
