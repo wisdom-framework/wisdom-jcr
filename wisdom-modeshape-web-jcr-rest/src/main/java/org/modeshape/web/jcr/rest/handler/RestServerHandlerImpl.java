@@ -1,4 +1,23 @@
 /*
+ * #%L
+ * Wisdom-Framework
+ * %%
+ * Copyright (C) 2013 - 2015 Wisdom Framework
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+/*
  * ModeShape (http://www.modeshape.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +35,12 @@
 
 package org.modeshape.web.jcr.rest.handler;
 
-import org.modeshape.web.jcr.RepositoryManager;
+import org.apache.felix.ipojo.annotations.Requires;
 import org.modeshape.web.jcr.rest.RestHelper;
 import org.modeshape.web.jcr.rest.model.RestRepositories;
 import org.wisdom.api.annotations.Service;
 import org.wisdom.api.http.Request;
+import org.wisdom.jcr.modeshape.RepositoryManager;
 
 import javax.jcr.Repository;
 import javax.jcr.Value;
@@ -35,6 +55,9 @@ import java.util.List;
 @Service(RestServerHandler.class)
 public class RestServerHandlerImpl extends AbstractHandler implements RestServerHandler {
 
+    @Requires
+    RepositoryManager repositoryManager;
+
     /**
      * Returns the list of JCR repositories available on this server
      *
@@ -44,7 +67,7 @@ public class RestServerHandlerImpl extends AbstractHandler implements RestServer
     @Override
     public RestRepositories getRepositories(Request request) {
         RestRepositories repositories = new RestRepositories();
-        for (String repositoryName : RepositoryManager.getJcrRepositoryNames()) {
+        for (String repositoryName : getRepositoryManager().getJcrRepositoryNames()) {
             addRepository(request, repositories, repositoryName);
         }
         return repositories;
@@ -56,7 +79,7 @@ public class RestServerHandlerImpl extends AbstractHandler implements RestServer
         RestRepositories.Repository repository = repositories.addRepository(repositoryName, RestHelper.urlFrom(request,
                 repositoryName));
         try {
-            Repository jcrRepository = RepositoryManager.getRepository(repositoryName);
+            Repository jcrRepository = getRepositoryManager().getRepository(repositoryName);
             repository.setActiveSessionsCount(((org.modeshape.jcr.api.Repository) jcrRepository).getActiveSessionsCount());
             for (String metadataKey : jcrRepository.getDescriptorKeys()) {
                 Value[] descriptorValues = jcrRepository.getDescriptorValues(metadataKey);
@@ -73,4 +96,8 @@ public class RestServerHandlerImpl extends AbstractHandler implements RestServer
         }
     }
 
+    @Override
+    protected RepositoryManager getRepositoryManager() {
+        return repositoryManager;
+    }
 }

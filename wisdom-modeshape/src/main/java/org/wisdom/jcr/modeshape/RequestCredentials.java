@@ -17,18 +17,27 @@
  * limitations under the License.
  * #L%
  */
-package org.modeshape.web.jcr.rest.model;
+package org.wisdom.jcr.modeshape;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.wisdom.api.content.Json;
+import org.wisdom.api.http.Request;
+
+import javax.jcr.Credentials;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 18/03/15
- * Time: 10:31
+ * Date: 20/03/15
+ * Time: 16:47
  */
-public interface JSONAble {
+public class RequestCredentials implements Credentials {
 
-    public ObjectNode toJSON(Json json);
+    private final Request request;
+
+    public RequestCredentials(Request request) {
+        this.request = request;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
 
 }

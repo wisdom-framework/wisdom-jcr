@@ -33,53 +33,32 @@
  * limitations under the License.
  */
 
-package org.modeshape.web.jcr.rest.model;
+package org.wisdom.jcr.modeshape;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.wisdom.api.content.Json;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import org.modeshape.common.annotation.Immutable;
+import org.modeshape.common.i18n.I18n;
 
 /**
- * A representation of an {@link Exception} which is used by the REST service to signal clients that a server-side exception
- * has occurred.
- *
+ * The internationalized string constants for the <code>org.modeshape.web.jcr*</code> packages.
+ * 
  * @author Horia Chiorean (hchiorea@redhat.com)
  */
-public final class RestException implements JSONAble {
-    private final String message;
-    private final String stackTrace;
+@Immutable
+public class WebJcrI18n {
+    public static I18n repositoriesContainerNotFoundInClasspath;
+    public static I18n cannotInitializeRepository;
+    public static I18n repositoryNotFound;
+    public static I18n cannotLoadRepositoryNames;
 
-    /**
-     * Creates a new exception, using only a message
-     *
-     * @param message a {@code non-null} string
-     */
-    public RestException( String message ) {
-        this.message = message;
-        this.stackTrace = null;
+    private WebJcrI18n() {
     }
 
-    /**
-     * Creates a new exception, based on an existing {@link Throwable}
-     *
-     * @param t a {@code non-null} {@link Exception}
-     */
-    public RestException( Throwable t ) {
-        this.message = t.getMessage();
-        StringWriter stringWriter = new StringWriter();
-        t.printStackTrace(new PrintWriter(stringWriter));
-        this.stackTrace = stringWriter.toString();
-    }
-
-    @Override
-    public ObjectNode toJSON(Json json) {
-        ObjectNode object = json.newObject();
-        object.put("exception", message);
-        if (stackTrace != null) {
-            object.put("stacktrace", stackTrace);
+    static {
+        try {
+            I18n.initialize(WebJcrI18n.class);
+        } catch (final Exception err) {
+            // CHECKSTYLE IGNORE check FOR NEXT 1 LINES
+            System.err.println(err);
         }
-        return object;
     }
 }

@@ -1,4 +1,23 @@
 /*
+ * #%L
+ * Wisdom-Framework
+ * %%
+ * Copyright (C) 2013 - 2015 Wisdom Framework
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+/*
  * ModeShape (http://www.modeshape.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +35,14 @@
 
 package org.modeshape.web.jcr.rest.handler;
 
+import org.apache.felix.ipojo.annotations.Requires;
 import org.modeshape.common.util.CheckArg;
 import org.modeshape.web.jcr.rest.RestHelper;
 import org.modeshape.web.jcr.rest.model.RestNodeType;
 import org.wisdom.api.annotations.Service;
 import org.wisdom.api.http.Request;
 import org.wisdom.api.http.Result;
+import org.wisdom.jcr.modeshape.RepositoryManager;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -45,6 +66,9 @@ public final class RestNodeTypeHandlerImpl extends AbstractHandler implements Re
      * HTTP response code for "Not Implemented"
      */
     private static final int HTTP_NOT_IMPLEMENTED = 501;
+
+    @Requires
+    RepositoryManager repositoryManager;
 
     /**
      * Retrieves the {@link RestNodeType rest node type representation} of the {@link javax.jcr.nodetype.NodeType} with the given name.
@@ -121,4 +145,10 @@ public final class RestNodeTypeHandlerImpl extends AbstractHandler implements Re
         }
         return result;
     }
+
+    @Override
+    protected RepositoryManager getRepositoryManager() {
+        return repositoryManager;
+    }
+
 }

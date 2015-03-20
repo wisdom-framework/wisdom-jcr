@@ -32,19 +32,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.wisdom.jcr.modeshape;
 
-package org.modeshape.web.jcr.rest.model;
+import javax.jcr.RepositoryException;
 
 /**
- * An interface which should be implemented by objects that provide a custom string representation.
- * 
- * @author Horia Chiorean (hchiorea@redhat.com)
+ * Exception thrown when an operation attempts to access a repository that does not exist.
  */
-public interface Stringable {
-    /**
-     * Returns the string representation of this object.
-     * 
-     * @return a {@code non-null} string representation
-     */
-    public String asString();
+public class NoSuchRepositoryException extends RepositoryException {
+
+    private static final long serialVersionUID = 1L;
+
+    public NoSuchRepositoryException( String message,
+                                      Throwable rootCause ) {
+        super(message, rootCause);
+    }
+
+    public NoSuchRepositoryException( String message ) {
+        super(message);
+    }
 }

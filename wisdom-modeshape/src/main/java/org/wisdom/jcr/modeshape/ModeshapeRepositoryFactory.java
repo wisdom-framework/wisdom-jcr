@@ -21,8 +21,7 @@ package org.wisdom.jcr.modeshape;
 
 import org.apache.felix.ipojo.annotations.*;
 import org.infinispan.schematic.document.ParsingException;
-import org.modeshape.jcr.ModeShapeEngine;
-import org.modeshape.jcr.RepositoryConfiguration;
+import org.modeshape.jcr.JcrRepositoriesContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
@@ -33,6 +32,7 @@ import javax.jcr.RepositoryFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by antoine on 22/07/2014.
@@ -49,42 +49,59 @@ public class ModeshapeRepositoryFactory implements RepositoryFactory {
 
     private Repository repository;
 
-    org.modeshape.jcr.ModeShapeEngine engine;
-
     private static String MODESHAPE_CFG = "modeshape";
+
+    /**
+     * The container which hold the engine and which is responsible for initializing & returning the repository.
+     */
+    private final JcrRepositoriesContainer container = new JcrRepositoriesContainer();
+
+    private String defaultName;
+
+    private String defaultUrl;
 
     @Validate
     private void start() throws ParsingException, FileNotFoundException, RepositoryException, InterruptedException {
-        engine = new ModeShapeEngine();
-        engine.start();
-        RepositoryConfiguration config = null;
-
+        defaultName = applicationConfiguration.getConfiguration(MODESHAPE_CFG).get("name");
         if (applicationConfiguration.isTest()) {
-            config = getModeshapeConfiguration("test");
+            defaultUrl = getModeshapeConfiguration("test");
         } else if (applicationConfiguration.isDev()) {
-            config = getModeshapeConfiguration("dev");
+            defaultUrl = getModeshapeConfiguration("dev");
         } else if (applicationConfiguration.isProd()) {
-            config = getModeshapeConfiguration("prod");
+            defaultUrl = getModeshapeConfiguration("prod");
         }
-        repository = engine.deploy(config);
     }
 
 
-    private RepositoryConfiguration getModeshapeConfiguration(String env) throws ParsingException, FileNotFoundException {
+    private String getModeshapeConfiguration(String env) throws ParsingException, FileNotFoundException {
         File file = new File(new File(applicationConfiguration.getBaseDir(), "conf"), applicationConfiguration.getConfiguration(MODESHAPE_CFG).get(env));
         logger.info("Reading modeshape configuration file: " + file.toURI().toString());
-        return RepositoryConfiguration.read(file);
+        return file.toURI().toString();
     }
 
     @Invalidate
     private void stop() {
-        engine.shutdown();
+        container.shutdown();
     }
 
     @Override
-    public Repository getRepository(Map map) throws RepositoryException {
-        return repository;
+    public Repository getRepository(Map parameters) throws RepositoryException {
+        fillParametersFromConfiguration(parameters);
+        return container.getRepository(null, parameters);
     }
 
+    private void fillParametersFromConfiguration(Map parameters) {
+        if (!parameters.containsKey(org.modeshape.jcr.api.RepositoryFactory.URL)) {
+            parameters.put(org.modeshape.jcr.api.RepositoryFactory.URL, defaultUrl);
+        }
+        if (!parameters.containsKey(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME)) {
+            parameters.put(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME, defaultName);
+        }
+    }
+
+    public Set<String> getRepositoryNames(Map<?, ?> parameters) throws RepositoryException {
+        fillParametersFromConfiguration(parameters);
+        return container.getRepositoryNames(parameters);
+    }
 
 }
