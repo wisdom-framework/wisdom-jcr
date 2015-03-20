@@ -106,6 +106,11 @@ public final class RestItemHandlerImpl extends ItemHandler implements RestItemHa
     }
 
     @Override
+    protected Json getJson() {
+        return json;
+    }
+
+    @Override
     protected JsonNode getProperties(JsonNode jsonNode) {
         ObjectNode properties = json.newObject();
         for (Iterator<?> keysIterator = jsonNode.fields(); keysIterator.hasNext(); ) {
