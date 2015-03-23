@@ -46,7 +46,7 @@ import org.wisdom.api.http.MimeTypes;
 import org.wisdom.api.http.Request;
 import org.wisdom.api.http.Result;
 import org.wisdom.api.http.Status;
-import org.wisdom.jcr.modeshape.RepositoryManager;
+import org.wisdom.jcr.modeshape.api.RepositoryManager;
 
 import javax.jcr.*;
 import java.io.IOException;

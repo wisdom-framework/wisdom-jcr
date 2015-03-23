@@ -32,13 +32,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wisdom.jcr.modeshape;
+package org.wisdom.jcr.modeshape.api.impl;
 
 import org.apache.felix.ipojo.annotations.Requires;
 import org.modeshape.common.annotation.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wisdom.api.annotations.Service;
 import org.wisdom.api.http.Request;
+import org.wisdom.jcr.modeshape.service.ModeshapeRepositoryFactory;
+import org.wisdom.jcr.modeshape.api.NoSuchRepositoryException;
+import org.wisdom.jcr.modeshape.RequestCredentials;
+import org.wisdom.jcr.modeshape.WebJcrI18n;
+import org.wisdom.jcr.modeshape.api.RepositoryManager;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -54,6 +60,7 @@ import java.util.Set;
  * Repositories) instances via the {@link java.util.ServiceLoader} and {@link org.modeshape.jcr.api.RepositoriesContainer} mechanism.
  */
 @ThreadSafe
+@Service(RepositoryManager.class)
 public class RepositoryManagerImpl implements RepositoryManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryManagerImpl.class);
@@ -95,7 +102,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
      *
      * @param repositoryName a {@code non-null} string
      * @return a {@link javax.jcr.Repository} instance, never {@code null}
-     * @throws NoSuchRepositoryException if no repository with the given name exists.
+     * @throws org.wisdom.jcr.modeshape.api.NoSuchRepositoryException if no repository with the given name exists.
      */
     @Override
     public Repository getRepository(String repositoryName) throws NoSuchRepositoryException {

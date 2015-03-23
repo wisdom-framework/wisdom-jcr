@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wisdom.jcr.modeshape;
+package org.wisdom.jcr.modeshape.api;
 
 import org.wisdom.api.http.Request;
 

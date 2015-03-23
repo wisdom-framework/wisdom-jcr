@@ -30,7 +30,7 @@ import javax.jcr.RepositoryException;
  * Date: 18/03/15
  * Time: 17:47
  */
-public interface RestItemHandler {
+public interface RestItemHandler extends ItemHandler {
 
     /**
      * Retrieves the JCR {@link javax.jcr.Item} at the given path, returning its rest representation.

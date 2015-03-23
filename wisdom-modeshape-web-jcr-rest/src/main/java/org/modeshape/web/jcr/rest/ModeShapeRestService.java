@@ -127,6 +127,7 @@ import java.io.InputStream;
  */
 @Immutable
 @Controller
+@Path("/")
 public final class ModeShapeRestService extends DefaultController {
 
     @Requires
@@ -136,7 +137,7 @@ public final class ModeShapeRestService extends DefaultController {
     private RestRepositoryHandler repositoryHandler;
 
     @Requires
-    private RestItemHandlerImpl itemHandler;
+    private RestItemHandler itemHandler;
 
     @Requires
     private RestNodeHandler nodeHandler;
@@ -240,7 +241,7 @@ public final class ModeShapeRestService extends DefaultController {
     public Result postCND(@PathParameter("repositoryName") String repositoryName,
                           @PathParameter("workspaceName") String workspaceName,
                           @PathParameter("allowUpdate") @DefaultValue("true") boolean allowUpdate,
-                          InputStream requestBodyInputStream) throws RepositoryException {
+                          @Body InputStream requestBodyInputStream) throws RepositoryException {
         return nodeTypeHandler.importCND(request(), repositoryName, workspaceName, allowUpdate, requestBodyInputStream);
     }
 
@@ -251,7 +252,7 @@ public final class ModeShapeRestService extends DefaultController {
      * @param repositoryName a non-null {@link String} representing the name of a repository.
      * @param workspaceName  a non-null {@link String} representing the name of a workspace.
      * @param allowUpdate    an optional parameter which indicates whether existing node types should be updated (overridden) or not.
-     * @param form           a {@link org.modeshape.web.jcr.rest.form.FileUploadForm} instance representing the HTML form from which the cnd was submitted
+     * @param form           a {@link org.wisdom.api.http.FileItem} instance representing the HTML form from which the cnd was submitted
      * @return a {@code non-null} {@link Result}
      * @throws javax.jcr.RepositoryException if any JCR operations fail
      * @throws IllegalArgumentException      if the submitted form does not contain an HTML element named "file".
@@ -303,7 +304,7 @@ public final class ModeShapeRestService extends DefaultController {
     public Result postItem(@PathParameter("repositoryName") String rawRepositoryName,
                            @PathParameter("workspaceName") String rawWorkspaceName,
                            @PathParameter("path") String path,
-                           String requestContent) throws RepositoryException {
+                           @Body String requestContent) throws RepositoryException {
         return ok(itemHandler.addItem(request(), rawRepositoryName, rawWorkspaceName, path, requestContent));
     }
 
@@ -328,7 +329,7 @@ public final class ModeShapeRestService extends DefaultController {
     @Route(method = HttpMethod.POST, uri = "{repositoryName}/{workspaceName}/" + RestHelper.ITEMS_METHOD_NAME)
     public Result postItems(@PathParameter("repositoryName") String rawRepositoryName,
                             @PathParameter("workspaceName") String rawWorkspaceName,
-                            String requestContent) throws RepositoryException {
+                            @Body String requestContent) throws RepositoryException {
         itemHandler.addItems(request(), rawRepositoryName, rawWorkspaceName, requestContent);
         return ok();
     }
@@ -369,7 +370,7 @@ public final class ModeShapeRestService extends DefaultController {
     @Route(method = HttpMethod.DELETE, uri = "{repositoryName}/{workspaceName}/" + RestHelper.ITEMS_METHOD_NAME)
     public Result deleteItems(@PathParameter("repositoryName") String rawRepositoryName,
                               @PathParameter("workspaceName") String rawWorkspaceName,
-                              String requestContent) throws RepositoryException {
+                              @Body String requestContent) throws RepositoryException {
         itemHandler.deleteItems(request(), rawRepositoryName, rawWorkspaceName, requestContent);
         return ok();
     }
@@ -394,7 +395,7 @@ public final class ModeShapeRestService extends DefaultController {
     public Result putItem(@PathParameter("repositoryName") String rawRepositoryName,
                           @PathParameter("workspaceName") String rawWorkspaceName,
                           @PathParameter("path") String path,
-                          String requestContent) throws RepositoryException {
+                          @Body String requestContent) throws RepositoryException {
         return ok(itemHandler.updateItem(request(), rawRepositoryName, rawWorkspaceName, path, requestContent));
     }
 
@@ -419,7 +420,7 @@ public final class ModeShapeRestService extends DefaultController {
     @Route(method = HttpMethod.PUT, uri = "{repositoryName}/{workspaceName}/" + RestHelper.ITEMS_METHOD_NAME)
     public Result putItems(@PathParameter("repositoryName") String rawRepositoryName,
                            @PathParameter("workspaceName") String rawWorkspaceName,
-                           String requestContent) throws RepositoryException {
+                           @Body String requestContent) throws RepositoryException {
         itemHandler.updateItems(request(), rawRepositoryName, rawWorkspaceName, requestContent);
         return ok();
     }
@@ -440,7 +441,7 @@ public final class ModeShapeRestService extends DefaultController {
     public Result postBinary(@PathParameter("repositoryName") String repositoryName,
                              @PathParameter("workspaceName") String workspaceName,
                              @PathParameter("path") String path,
-                             InputStream requestBodyInputStream) throws RepositoryException {
+                             @Body InputStream requestBodyInputStream) throws RepositoryException {
         return binaryHandler.updateBinary(request(), repositoryName, workspaceName, path, requestBodyInputStream, true);
     }
 
@@ -460,7 +461,7 @@ public final class ModeShapeRestService extends DefaultController {
     public Result putBinary(@PathParameter("repositoryName") String repositoryName,
                             @PathParameter("workspaceName") String workspaceName,
                             @PathParameter("path") String path,
-                            InputStream requestBodyInputStream) throws RepositoryException {
+                            @Body InputStream requestBodyInputStream) throws RepositoryException {
         return binaryHandler.updateBinary(request(), repositoryName, workspaceName, path, requestBodyInputStream, false);
     }
 
@@ -471,7 +472,7 @@ public final class ModeShapeRestService extends DefaultController {
      * @param repositoryName a non-null {@link String} representing the name of a repository.
      * @param workspaceName  a non-null {@link String} representing the name of a workspace.
      * @param path           the path to the binary property
-     * @param form           a {@link org.modeshape.web.jcr.rest.form.FileUploadForm} instance representing the HTML form from which the binary was submitted
+     * @param form           a {@link org.wisdom.api.http.FileItem} instance representing the HTML form from which the binary was submitted
      * @return a {@code non-null} {@link Result}
      * @throws javax.jcr.RepositoryException if any JCR related operation fails.
      * @see ModeShapeRestService#postBinary(String, String, String, java.io.InputStream)
@@ -504,7 +505,7 @@ public final class ModeShapeRestService extends DefaultController {
      * @param repositoryName a non-null {@link String} representing the name of a repository.
      * @param workspaceName  a non-null {@link String} representing the name of a workspace.
      * @param filePath       the path to the binary property
-     * @param form           a {@link org.modeshape.web.jcr.rest.form.FileUploadForm} instance representing the HTML form from which the binary was submitted
+     * @param form           a {@link org.wisdom.api.http.FileItem} instance representing the HTML form from which the binary was submitted
      * @return a {@code non-null} {@link Result}
      * @throws javax.jcr.RepositoryException if any JCR related operation fails.
      */
@@ -571,7 +572,7 @@ public final class ModeShapeRestService extends DefaultController {
                                  @PathParameter("workspaceName") String rawWorkspaceName,
                                  @QueryParameter("offset") @DefaultValue("-1") long offset,
                                  @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                 String requestContent) throws RepositoryException {
+                                 @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.executeQuery(request(), rawRepositoryName, rawWorkspaceName, Query.XPATH, requestContent, offset,
                 limit));
     }
@@ -601,7 +602,7 @@ public final class ModeShapeRestService extends DefaultController {
                                   @PathParameter("workspaceName") String rawWorkspaceName,
                                   @QueryParameter("offset") @DefaultValue("-1") long offset,
                                   @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                  String requestContent) throws RepositoryException {
+                                  @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.executeQuery(request(), rawRepositoryName, rawWorkspaceName, Query.SQL, requestContent, offset, limit));
     }
 
@@ -629,7 +630,7 @@ public final class ModeShapeRestService extends DefaultController {
                                    @PathParameter("workspaceName") String rawWorkspaceName,
                                    @QueryParameter("offset") @DefaultValue("-1") long offset,
                                    @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                   String requestContent) throws RepositoryException {
+                                   @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.executeQuery(request(), rawRepositoryName, rawWorkspaceName, Query.JCR_SQL2, requestContent, offset,
                 limit));
     }
@@ -658,7 +659,7 @@ public final class ModeShapeRestService extends DefaultController {
                                      @PathParameter("workspaceName") String rawWorkspaceName,
                                      @QueryParameter("offset") @DefaultValue("-1") long offset,
                                      @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                     String requestContent) throws RepositoryException {
+                                     @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.executeQuery(request(), rawRepositoryName, rawWorkspaceName,
                 org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH, requestContent, offset, limit));
     }
@@ -688,7 +689,7 @@ public final class ModeShapeRestService extends DefaultController {
                                      @PathParameter("workspaceName") String rawWorkspaceName,
                                      @QueryParameter("offset") @DefaultValue("-1") long offset,
                                      @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                     String requestContent) throws RepositoryException {
+                                     @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.planQuery(request(), rawRepositoryName, rawWorkspaceName, Query.XPATH, requestContent, offset, limit));
     }
 
@@ -717,7 +718,7 @@ public final class ModeShapeRestService extends DefaultController {
                                       @PathParameter("workspaceName") String rawWorkspaceName,
                                       @QueryParameter("offset") @DefaultValue("-1") long offset,
                                       @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                      String requestContent) throws RepositoryException {
+                                      @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.planQuery(request(), rawRepositoryName, rawWorkspaceName, Query.SQL, requestContent, offset, limit));
     }
 
@@ -745,7 +746,7 @@ public final class ModeShapeRestService extends DefaultController {
                                        @PathParameter("workspaceName") String rawWorkspaceName,
                                        @QueryParameter("offset") @DefaultValue("-1") long offset,
                                        @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                       String requestContent) throws RepositoryException {
+                                       @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.planQuery(request(), rawRepositoryName, rawWorkspaceName, Query.JCR_SQL2, requestContent, offset,
                 limit));
     }
@@ -774,7 +775,7 @@ public final class ModeShapeRestService extends DefaultController {
                                          @PathParameter("workspaceName") String rawWorkspaceName,
                                          @QueryParameter("offset") @DefaultValue("-1") long offset,
                                          @QueryParameter("limit") @DefaultValue("-1") long limit,
-                                         String requestContent) throws RepositoryException {
+                                         @Body String requestContent) throws RepositoryException {
         return ok(queryHandler.planQuery(request(), rawRepositoryName, rawWorkspaceName,
                 org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH, requestContent, offset, limit));
     }
@@ -793,11 +794,11 @@ public final class ModeShapeRestService extends DefaultController {
      * @see javax.jcr.Session#getNodeByIdentifier(String)
      */
     @Route(method = HttpMethod.GET, uri = "{repositoryName}/{workspaceName}/" + RestHelper.NODES_METHOD_NAME + "/{id:.*}")
-    public RestItem getNodeWithId(@PathParameter("repositoryName") String rawRepositoryName,
+    public Result getNodeWithId(@PathParameter("repositoryName") String rawRepositoryName,
                                   @PathParameter("workspaceName") String rawWorkspaceName,
                                   @PathParameter("id") String id,
                                   @QueryParameter("depth") @DefaultValue("0") int depth) throws RepositoryException {
-        return nodeHandler.nodeWithId(request(), rawRepositoryName, rawWorkspaceName, id, depth);
+        return ok(nodeHandler.nodeWithId(request(), rawRepositoryName, rawWorkspaceName, id, depth));
     }
 
     /**
@@ -815,11 +816,11 @@ public final class ModeShapeRestService extends DefaultController {
      * @throws javax.jcr.RepositoryException if any other error occurs
      */
     @Route(method = HttpMethod.PUT, uri = "{repositoryName}/{workspaceName}/" + RestHelper.NODES_METHOD_NAME + "/{id:.+}")
-    public RestItem putNodeWithId(@PathParameter("repositoryName") String rawRepositoryName,
+    public Result putNodeWithId(@PathParameter("repositoryName") String rawRepositoryName,
                                   @PathParameter("workspaceName") String rawWorkspaceName,
                                   @PathParameter("id") String id,
-                                  String requestContent) throws RepositoryException {
-        return nodeHandler.updateNodeWithId(request(), rawRepositoryName, rawWorkspaceName, id, requestContent);
+                                  @Body String requestContent) throws RepositoryException {
+        return ok(nodeHandler.updateNodeWithId(request(), rawRepositoryName, rawWorkspaceName, id, requestContent));
     }
 
     /**

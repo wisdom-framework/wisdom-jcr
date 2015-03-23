@@ -42,20 +42,20 @@ import org.modeshape.web.jcr.rest.model.RestItem;
 import org.wisdom.api.annotations.Service;
 import org.wisdom.api.content.Json;
 import org.wisdom.api.http.Request;
-import org.wisdom.jcr.modeshape.RepositoryManager;
+import org.wisdom.jcr.modeshape.api.RepositoryManager;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
- * An extension to the {@link ItemHandler} which is used by {@link org.modeshape.web.jcr.rest.ModeShapeRestService} to interact
+ * An extension to the {@link ItemHandlerImpl} which is used by {@link org.modeshape.web.jcr.rest.ModeShapeRestService} to interact
  * with properties and nodes.
  *
  * @author Horia Chiorean (hchiorea@redhat.com)
  */
 @Service(RestNodeHandler.class)
-public final class RestNodeHandlerImpl extends ItemHandler implements RestNodeHandler {
+public final class RestNodeHandlerImpl extends ItemHandlerImpl implements RestNodeHandler {
 
     @Requires
     Json json;

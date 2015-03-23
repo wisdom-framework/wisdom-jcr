@@ -42,7 +42,7 @@ import org.modeshape.web.jcr.rest.model.RestNodeType;
 import org.wisdom.api.annotations.Service;
 import org.wisdom.api.http.Request;
 import org.wisdom.api.http.Result;
-import org.wisdom.jcr.modeshape.RepositoryManager;
+import org.wisdom.jcr.modeshape.api.RepositoryManager;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;

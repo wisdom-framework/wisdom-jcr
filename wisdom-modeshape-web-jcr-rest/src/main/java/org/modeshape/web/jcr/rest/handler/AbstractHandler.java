@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.http.Request;
 import org.wisdom.api.http.Result;
+import org.wisdom.jcr.modeshape.api.RepositoryManager;
 
 import javax.jcr.*;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public abstract class AbstractHandler {
         return ACTIVE_SESSION.get();
     }
 
-    protected abstract org.wisdom.jcr.modeshape.RepositoryManager getRepositoryManager();
+    protected abstract RepositoryManager getRepositoryManager();
 
     /**
      * Cleans up any resources related to {@link AbstractHandler#ACTIVE_SESSION}

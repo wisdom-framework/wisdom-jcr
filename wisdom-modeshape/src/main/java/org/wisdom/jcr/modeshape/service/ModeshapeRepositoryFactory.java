@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wisdom.jcr.modeshape;
+package org.wisdom.jcr.modeshape.service;
 
 import org.apache.felix.ipojo.annotations.*;
 import org.infinispan.schematic.document.ParsingException;
