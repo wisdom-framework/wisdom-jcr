@@ -90,7 +90,7 @@ public class RepositoryManagerImpl implements RepositoryManager {
         Repository repository = getRepository(repositoryName);
 
         // If there's no authenticated user, try an anonymous login
-        if (request == null) {
+        if (request == null || request.username() == null) {
             return repository.login(workspaceName);
         }
 

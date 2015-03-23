@@ -22,56 +22,73 @@ package org.wisdom.jcrom.conf;
 import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.configuration.Configuration;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by antoine on 14/07/2014.
  */
 public class JcromConfiguration {
 
-    public static final String JCROM_PREFIX = "jcrom";
+    public final static String JCROM_PREFIX = "jcrom";
 
-    private final String alias;
+    public final static String PACKAGES_PREFIX = "packages";
 
-    private final String nameSpace;
+    public final static String DYNAMIC_INSTANTIATION = "dynamic.instantiation";
 
-    public JcromConfiguration(String alias, String nameSpace) {
-        this.alias = alias;
-        this.nameSpace = nameSpace;
+    public final static String CLEAN_NAMES = "clean.names";
+
+    public final static String REPOSITORY = "repository";
+
+    private Configuration configuration;
+
+    private String env;
+
+    public JcromConfiguration(Configuration configuration, String env) {
+        this.configuration = configuration;
+        this.env = env;
     }
 
-    public Dictionary<String, String> toDico() {
-        Dictionary<String, String> dico = new Hashtable<String, String>(3);
-        dico.put("name", alias);
-        dico.put("package", nameSpace);
+    public static JcromConfiguration fromApplicationConfiguration(ApplicationConfiguration applicationConfiguration) {
+        if (applicationConfiguration.has(JCROM_PREFIX)) {
+            String env = null;
+            if (applicationConfiguration.isDev()) {
+                env = "dev";
+            } else if (applicationConfiguration.isTest()) {
+                env = "test";
+            } else if (applicationConfiguration.isProd()) {
+                env = "prod";
+            }
+            return new JcromConfiguration(applicationConfiguration.getConfiguration(JCROM_PREFIX), env);
+        }
+        return null;
+    }
+
+    public boolean isDynamicInstantiation() {
+        return configuration.getBooleanWithDefault(DYNAMIC_INSTANTIATION, true);
+    }
+
+    public boolean isCleanNames() {
+        return configuration.getBooleanWithDefault(CLEAN_NAMES, true);
+    }
+
+    public String getRepository() {
+        return configuration.get(env + "." + REPOSITORY);
+    }
+
+    public List<String> getPackages() {
+        return Arrays.asList(configuration.get(PACKAGES_PREFIX).split(","));
+    }
+
+    public Dictionary<String, String> toDictionary() {
+        Dictionary<String, String> dico = new Hashtable<>(3);
+        dico.put(DYNAMIC_INSTANTIATION, Boolean.toString(isDynamicInstantiation()));
+        dico.put(CLEAN_NAMES, Boolean.toString(isCleanNames()));
+        dico.put(PACKAGES_PREFIX, getPackages().stream().collect(Collectors.joining(",")));
         return dico;
-    }
-
-    /**
-     * Extract jcrom package from the configuration
-     */
-    public static Collection<JcromConfiguration> createFromApplicationConf(ApplicationConfiguration config) {
-        Configuration jcrom = config.getConfiguration(JCROM_PREFIX).getConfiguration("packages");
-
-        if (jcrom == null) {
-            return Collections.EMPTY_SET;
-        }
-
-        Set<String> subkeys = new HashSet<String>();
-        Collection<JcromConfiguration> subconfs = new ArrayList<JcromConfiguration>(subkeys.size());
-        for (String key : jcrom.asMap().keySet()) {
-            JcromConfiguration conf = new JcromConfiguration(key, (String) jcrom.asMap().get(key));
-            subconfs.add(conf);
-        }
-        return subconfs;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public String getNameSpace() {
-        return nameSpace;
     }
 
 }

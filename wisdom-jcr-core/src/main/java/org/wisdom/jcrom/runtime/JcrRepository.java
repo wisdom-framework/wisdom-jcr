@@ -33,7 +33,9 @@ import org.wisdom.jcrom.object.JcrCrud;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Dictionary;
 
 /**
  * Created by antoine on 14/07/2014.
@@ -44,57 +46,39 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     private final javax.jcr.Repository repository;
 
-    private final JcromConfiguration conf;
+    private final JcromConfiguration jcromConfiguration;
 
     private final Jcrom jcrom;
 
     private final Session session;
 
     private Collection<ServiceRegistration> registrations = new ArrayList<>();
-    private Collection<JcrCrud<?, ?>> crudServices = new ArrayList<>();
-    private ApplicationConfiguration applicationConfiguration;
 
-    public JcrRepository(JcromConfiguration conf, RepositoryFactory repositoryFactory, ApplicationConfiguration applicationConfiguration) throws RepositoryException {
-        Map<String, String> parameters = new HashMap<String, String>();
+    private Collection<JcrCrud<?, ?>> crudServices = new ArrayList<>();
+
+    public JcrRepository(JcromConfiguration jcromConfiguration, RepositoryFactory repositoryFactory, ApplicationConfiguration applicationConfiguration) throws RepositoryException {
         Thread.currentThread().setContextClassLoader(repositoryFactory.getClass().getClassLoader());
-        logger.info("Loading JCR repository using " + repositoryFactory);
-        this.repository = repositoryFactory.getRepository(parameters);
-        this.applicationConfiguration = applicationConfiguration;
-        this.jcrom = new Jcrom(true, dynamicInstanciation());
-        this.conf = conf;
-        addCrudFactory();
+        logger.info("Loading JCR repository " + jcromConfiguration.getRepository());
+        this.repository = repositoryFactory.getRepository(applicationConfiguration.getConfiguration("jcr").getConfiguration(jcromConfiguration.getRepository()).asMap());
+        this.jcrom = new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
+        this.jcromConfiguration = jcromConfiguration;
         Thread.currentThread().setContextClassLoader(JcrRepository.class.getClassLoader());
         this.session = repository.login();
     }
 
-    public boolean dynamicInstanciation() {
-        if (applicationConfiguration.getConfiguration("jcrom").getConfiguration("conf") == null) {
-            return false;
-        }
-        return applicationConfiguration.getConfiguration("jcrom").getConfiguration("conf").get("dynamicInstanciation").equals("true");
-    }
-
-    public JcromConfiguration getConf() {
-        return conf;
-    }
-
-    protected void addCrudFactory() {
-    }
-
-    protected void addCrudService(Class entity) throws RepositoryException {
+    protected void addCrudService(Class entity, BundleContext bundleContext) throws RepositoryException {
         jcrom.map(entity);
         JcrCrudService<? extends Object> jcromCrudService;
         jcromCrudService = new JcrCrudService<Object>(this, entity);
         crudServices.add(jcromCrudService);
+        registerCrud(bundleContext, jcromCrudService);
     }
 
-    protected void registerAllCrud(BundleContext context) {
-        for (JcrCrud crud : crudServices) {
-            Dictionary prop = conf.toDico();
-            prop.put(Crud.ENTITY_CLASS_PROPERTY, crud.getEntityClass());
-            prop.put(Crud.ENTITY_CLASSNAME_PROPERTY, crud.getEntityClass().getName());
-            registrations.add(context.registerService(new String[]{Crud.class.getName(), JcrCrud.class.getName(), crud.getClass().getName()}, crud, prop));
-        }
+    protected void registerCrud(BundleContext context, JcrCrudService crud) {
+        Dictionary prop = jcromConfiguration.toDictionary();
+        prop.put(Crud.ENTITY_CLASS_PROPERTY, crud.getEntityClass());
+        prop.put(Crud.ENTITY_CLASSNAME_PROPERTY, crud.getEntityClass().getName());
+        registrations.add(context.registerService(new String[]{Crud.class.getName(), JcrCrud.class.getName(), crud.getClass().getName()}, crud, prop));
     }
 
     protected void destroy() {
@@ -126,7 +110,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     @Override
     public String getName() {
-        return repository.toString();
+        return jcromConfiguration.getRepository();
     }
 
     @Override

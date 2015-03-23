@@ -48,37 +48,21 @@ public class ModeshapeRepositoryFactory implements RepositoryFactory {
     @Requires
     ApplicationConfiguration applicationConfiguration;
 
-    private Repository repository;
-
-    private static String MODESHAPE_CFG = "modeshape";
+    private static String JCR = "jcr";
 
     /**
      * The container which hold the engine and which is responsible for initializing & returning the repository.
      */
     private final ModeShapeEngine engine = new ModeShapeEngine();
 
-    private String defaultName;
-
-    private File defaultFile;
-
     @Validate
     private void start() throws RepositoryException, InterruptedException {
         engine.start();
-        defaultName = applicationConfiguration.getConfiguration(MODESHAPE_CFG).get("name");
-        if (applicationConfiguration.isTest()) {
-            defaultFile = getModeshapeConfiguration("test");
-        } else if (applicationConfiguration.isDev()) {
-            defaultFile = getModeshapeConfiguration("dev");
-        } else if (applicationConfiguration.isProd()) {
-            defaultFile = getModeshapeConfiguration("prod");
-        }
     }
 
 
-    private File getModeshapeConfiguration(String env) {
-        File file = new File(new File(applicationConfiguration.getBaseDir(), "conf"), applicationConfiguration.getConfiguration(MODESHAPE_CFG).get(env));
-        logger.info("Reading modeshape configuration file: " + file.toURI().toString());
-        return file;
+    private Map getRepositoryConfiguration(String repositoryName) {
+        return applicationConfiguration.getConfiguration(JCR).getConfiguration(repositoryName).asMap();
     }
 
     @Invalidate
@@ -88,27 +72,21 @@ public class ModeshapeRepositoryFactory implements RepositoryFactory {
 
     @Override
     public Repository getRepository(Map parameters) throws RepositoryException {
-        fillParametersFromConfiguration(parameters);
         String name = (String) parameters.get(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME);
+        logger.info("Accessing repository " + name);
+        Map defaultParameters = getRepositoryConfiguration(name);
+        defaultParameters.putAll(parameters);
         if (!engine.getRepositoryNames().contains(name)) {
             try {
-                engine.deploy(RepositoryConfiguration.read(defaultFile));
+                File configurationFile = new File(new File(applicationConfiguration.getBaseDir(), "conf"), (String) defaultParameters.get(org.modeshape.jcr.api.RepositoryFactory.URL));
+                engine.deploy(RepositoryConfiguration.read(configurationFile));
             } catch (ParsingException e) {
-                logger.error(e.getMessage(),e );
+                logger.error(e.getMessage(), e);
             } catch (FileNotFoundException e) {
                 logger.error(e.getMessage(), e);
             }
         }
         return engine.getRepository(name);
-    }
-
-    private void fillParametersFromConfiguration(Map parameters) {
-        if (!parameters.containsKey(org.modeshape.jcr.api.RepositoryFactory.URL)) {
-            parameters.put(org.modeshape.jcr.api.RepositoryFactory.URL, defaultFile.toURI().toString());
-        }
-        if (!parameters.containsKey(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME)) {
-            parameters.put(org.modeshape.jcr.api.RepositoryFactory.REPOSITORY_NAME, defaultName);
-        }
     }
 
     public Set<String> getRepositoryNames() throws RepositoryException {

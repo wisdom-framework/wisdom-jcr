@@ -4,14 +4,14 @@
   "description": "This project integrates JCR repositories within Wisdom-Framework.The Wisdom-JCR project relies on JCROM to map objects between Wisdom and the JCR repository.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agonist/wisdom-jcr"
+    "url": "https://github.com/wisdom-framework/wisdom-jcr"
   },
   "author": "The dooApp Team",
   "license": {
     "type": "Apache",
     "url": "https://github.com/wisdom-framework/wisdom/blob/master/LICENSE.txt"
   },
-  "homepage": "https://github.com/agonist/wisdom-jcr",
+  "homepage": "https://github.com/wisdom-framework/wisdom-jcr",
   "keywords": [
     "jcr",
     "repository",
