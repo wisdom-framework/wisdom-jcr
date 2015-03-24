@@ -31,20 +31,37 @@ And pick-up a module providing access to the repository implementation, for exam
 
 ## Configuration
 
-Configure packages that need to be mapped by JCROM in application.conf in the jcrom entry. Several packages can be listed there, the key used does not matter.
+To use wisdom-jcr, you need to configure JCROM and the JCR repository used.
+
+### JCROM configuration
+
+  - ```packages``` Configure packages that need to be mapped by JCROM in application.conf in the jcrom entry. Several packages can be listed comma-separated there.
+  - ```dynamic.instantiation``` flag to enable [dynamic instantiation](https://code.google.com/p/jcrom/wiki/DynamicInstantiation) for JCROM
+  - ```clean.names``` flag to enable [automatic name cleaning](http://jcrom.googlecode.com/svn/branches/2.0.0/jcrom/apidocs/org/jcrom/Jcrom.html#Jcrom(boolean)) for JCROM
+  - ```env.repository``` the name of the repository to use with JCROM for the given environment
 
 ```
 jcrom {
-    package = todo.models
-    otherPackage = todo.other.models
+    packages = todo.models,todo.other.models
+    dynamic.instantiation = true
+    clean.names = true
+    dev.repository = sample-repository-dev
+    test.repository = sample-repository-test
+    prod.repository = sample-repository-prod
 }
 ```
 
-When using wisdom-modeshape, you must specify in application.conf the link to the modeshape configuration file for the required environnements:
+### JCR configuration
+
+To use wisdom-jcr, a repository matching the name of the repository specified in the JCROM configuration must be available.
+
+For each repository to load, you can specify a map of parameters to pass to the RepositoryFactory in the jcr configuration block. These parameters depends on the repository vendor. The following example is for the Modeshape repository factory provided with the wisdom-modeshape module:
+
 ```
-modeshape {
-    dev = modeshape-dev.json
-    test = mdoeshape-test.json
-    prod = modeshape.json
+jcr {
+    sample-repository-dev {
+        "org.modeshape.jcr.RepositoryName" = sample-repository-dev
+        "org.modeshape.jcr.URL" = "modeshape.json"
+    }
 }
 ```
