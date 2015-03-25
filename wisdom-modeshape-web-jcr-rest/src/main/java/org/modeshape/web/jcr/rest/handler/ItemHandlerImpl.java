@@ -96,8 +96,8 @@ public abstract class ItemHandlerImpl extends AbstractHandler implements ItemHan
             updateMixins(newNode, properties.get(MIXIN_TYPES_PROPERTY));
         }
 
-        for (Iterator<?> iter = properties.fields(); iter.hasNext(); ) {
-            String key = (String) iter.next();
+        for (Iterator<String> iter = properties.fieldNames(); iter.hasNext(); ) {
+            String key = iter.next();
 
             if (PRIMARY_TYPE_PROPERTY.equals(key) || MIXIN_TYPES_PROPERTY.equals(key)) {
                 continue;
@@ -381,8 +381,8 @@ public abstract class ItemHandlerImpl extends AbstractHandler implements ItemHan
         }
 
         // Now set all the other properties ...
-        for (Iterator<?> iter = properties.fields(); iter.hasNext(); ) {
-            String key = (String) iter.next();
+        for (Iterator<String> iter = properties.fieldNames(); iter.hasNext(); ) {
+            String key = iter.next();
             if (PRIMARY_TYPE_PROPERTY.equals(key) || MIXIN_TYPES_PROPERTY.equals(key) || CHILD_NODE_HOLDER.equals(key)) {
                 continue;
             }
