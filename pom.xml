@@ -34,9 +34,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/agonist/wisdom-jcr</url>
-        <connection>scm:git:git@github.com:agonist/wisdom-jcr.git</connection>
-        <developerConnection>scm:git:git@github.com:agonist/wisdom-jcr.git</developerConnection>
+        <url>https://github.com/wisdom-framework/wisdom-jcr</url>
+        <connection>scm:git:git@github.com:wisdom-framework/wisdom-jcr.git</connection>
+        <developerConnection>scm:git:git@github.com:wisdom-framework/wisdom-jcr.git</developerConnection>
     </scm>
 
     <properties>
@@ -67,15 +67,10 @@
     </dependencyManagement>
 
     <distributionManagement>
-        <repository>
-            <id>dooapp-nexus</id>
-            <name>dooapp-artifactory-releases</name>
-            <url>http://nexus.jack.dooapp.com/content/repositories/releases</url>
-        </repository>
         <snapshotRepository>
-            <id>dooapp-nexus</id>
-            <name>dooapp-artifactory-snapshots</name>
-            <url>http://nexus.jack.dooapp.com/content/repositories/snapshots</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+
 </project>
