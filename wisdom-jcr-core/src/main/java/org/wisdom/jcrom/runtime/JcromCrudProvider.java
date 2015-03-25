@@ -96,35 +96,33 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository>
             for (String p : jcromConfiguration.getPackages()) {
                 Enumeration<URL> enums = bundle.findEntries(packageNameToPath(p), "*.class", true);
 
-                if (enums == null) {
-                    break;
-                }
-
-                if (repository == null) {
-                    try {
-                        repository = new JcrRepository(jcromConfiguration, repositoryFactory, applicationConfiguration);
-                    } catch (RepositoryException e) {
-                        logger.error("Can not access repository: " + jcromConfiguration.getRepository(), e);
+                if (enums != null) {
+                    if (repository == null) {
+                        try {
+                            repository = new JcrRepository(jcromConfiguration, repositoryFactory, applicationConfiguration);
+                        } catch (RepositoryException e) {
+                            logger.error("Can not access repository: " + jcromConfiguration.getRepository(), e);
+                        }
                     }
-                }
 
-                //Load the entities from the bundle
-                do {
-                    URL entry = enums.nextElement();
-                    try {
-                        logger.info("Enable mapping in jcrom for " + entry);
-                        String className = urlToClassName(entry);
-                        Class clazz = bundle.loadClass(className);
-                        repository.addCrudService(clazz, context);
-                    } catch (ClassNotFoundException e) {
-                        logger.debug(e.getMessage());
-                    } catch (RepositoryException e) {
-                        logger.debug(e.getMessage());
-                    } catch (NullPointerException e) {
-                        logger.debug(e.getMessage());
-                    }
-                } while (enums.hasMoreElements());
-                logger.debug("Crud service has been added for " + p);
+                    //Load the entities from the bundle
+                    do {
+                        URL entry = enums.nextElement();
+                        try {
+                            logger.info("Enable mapping in jcrom for " + entry);
+                            String className = urlToClassName(entry);
+                            Class clazz = bundle.loadClass(className);
+                            repository.addCrudService(clazz, context);
+                        } catch (ClassNotFoundException e) {
+                            logger.debug(e.getMessage());
+                        } catch (RepositoryException e) {
+                            logger.debug(e.getMessage());
+                        } catch (NullPointerException e) {
+                            logger.debug(e.getMessage());
+                        }
+                    } while (enums.hasMoreElements());
+                    logger.debug("Crud service has been added for " + p);
+                }
             }
         }
         return repository;
