@@ -10,6 +10,7 @@
         <version>0.8.0</version>
     </parent>
 
+    <groupId>org.wisdom-framework.jcr</groupId>
     <artifactId>wisdom-jcr</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -65,17 +66,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <distributionManagement>
-        <repository>
-            <id>dooapp-nexus</id>
-            <name>dooapp-artifactory-releases</name>
-            <url>http://nexus.jack.dooapp.com/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>dooapp-nexus</id>
-            <name>dooapp-artifactory-snapshots</name>
-            <url>http://nexus.jack.dooapp.com/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
