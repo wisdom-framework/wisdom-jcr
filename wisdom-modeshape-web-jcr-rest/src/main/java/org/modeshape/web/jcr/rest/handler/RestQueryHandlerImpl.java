@@ -58,7 +58,7 @@ public final class RestQueryHandlerImpl extends AbstractHandler implements RestQ
 
     private static final String MODE_URI = "mode:uri";
     private static final String UNKNOWN_TYPE = "unknown-type";
-    private static final List<String> SKIP_QUERY_PARAMETERS = Arrays.asList("offset", "limit");
+    private static final Set<String> SKIP_QUERY_PARAMETERS = new HashSet<>(Arrays.asList("offset", "limit"));
 
     @Requires
     RepositoryManager repositoryManager;
