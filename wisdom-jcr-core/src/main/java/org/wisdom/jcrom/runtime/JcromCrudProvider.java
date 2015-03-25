@@ -117,9 +117,11 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository>
                         Class clazz = bundle.loadClass(className);
                         repository.addCrudService(clazz, context);
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        logger.debug(e.getMessage());
                     } catch (RepositoryException e) {
-                        e.printStackTrace();
+                        logger.debug(e.getMessage());
+                    } catch (NullPointerException e) {
+                        logger.debug(e.getMessage());
                     }
                 } while (enums.hasMoreElements());
                 logger.debug("Crud service has been added for " + p);

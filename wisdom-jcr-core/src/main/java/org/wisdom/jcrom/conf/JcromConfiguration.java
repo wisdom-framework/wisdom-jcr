@@ -33,15 +33,15 @@ import java.util.stream.Collectors;
  */
 public class JcromConfiguration {
 
-    public final static String JCROM_PREFIX = "jcrom";
+    public static final String JCROM_PREFIX = "jcrom";
 
-    public final static String PACKAGES_PREFIX = "packages";
+    public static final String PACKAGES_PREFIX = "packages";
 
-    public final static String DYNAMIC_INSTANTIATION = "dynamic.instantiation";
+    public static final String DYNAMIC_INSTANTIATION = "dynamic.instantiation";
 
-    public final static String CLEAN_NAMES = "clean.names";
+    public static final String CLEAN_NAMES = "clean.names";
 
-    public final static String REPOSITORY = "repository";
+    public static final String REPOSITORY = "repository";
 
     private Configuration configuration;
 

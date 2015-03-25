@@ -124,13 +124,12 @@ public class TodoController extends DefaultController {
     @Route(method = PUT, uri = "/{id}")
     public Result createTodo(final @Parameter("id") String id, @Valid @Body Todo todo) {
         TodoList todoList = listCrud.findOne(id);
+        if (todo == null) {
+            return badRequest("Cannot create todo, content is null.");
+        }
         todo.setId(UUID.randomUUID().toString());
         if (todoList == null) {
             return notFound();
-        }
-
-        if (todo == null) {
-            return badRequest("Cannot create todo, content is null.");
         }
 
         todoList.getTodos().add(todo);
