@@ -238,7 +238,7 @@ public final class RestItemHandlerImpl extends ItemHandlerImpl implements RestIt
         if (requestBody.size() != 0) {
             Session session = getSession(request, repositoryName, workspaceName);
             TreeMap<String, JsonNode> nodesByPath = createNodesByPathMap(requestBody);
-            List<RestItem> result = updateMultipleNodes(request, session, nodesByPath);
+            updateMultipleNodes(request, session, nodesByPath);
         }
     }
 
@@ -282,9 +282,9 @@ public final class RestItemHandlerImpl extends ItemHandlerImpl implements RestIt
                                                TreeMap<String, JsonNode> nodesByPath)
             throws RepositoryException {
         List<RestItem> result = new ArrayList<RestItem>();
-        for (String nodePath : nodesByPath.keySet()) {
-            Item item = session.getItem(nodePath);
-            item = updateItem(item, nodesByPath.get(nodePath));
+        for (Map.Entry<String, JsonNode> nodePath : nodesByPath.entrySet()) {
+            Item item = session.getItem(nodePath.getKey());
+            item = updateItem(item, nodePath.getValue());
             result.add(createRestItem(request, 0, session, item));
         }
         session.save();
@@ -307,12 +307,12 @@ public final class RestItemHandlerImpl extends ItemHandlerImpl implements RestIt
                                   Session session) throws RepositoryException {
         List<RestItem> result = new ArrayList<RestItem>();
 
-        for (String nodePath : nodesByPath.keySet()) {
-            String parentAbsPath = parentPath(nodePath);
-            String newNodeName = newNodeName(nodePath);
+        for (Map.Entry<String, JsonNode> nodePath : nodesByPath.entrySet()) {
+            String parentAbsPath = parentPath(nodePath.getKey());
+            String newNodeName = newNodeName(nodePath.getKey());
 
             Node parentNode = (Node) session.getItem(parentAbsPath);
-            Node newNode = addNode(parentNode, newNodeName, nodesByPath.get(nodePath));
+            Node newNode = addNode(parentNode, newNodeName, nodePath.getValue());
             RestItem restNewNode = createRestItem(request, 0, session, newNode);
             result.add(restNewNode);
         }

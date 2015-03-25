@@ -233,8 +233,7 @@ public final class RestBinaryHandlerImpl extends AbstractHandler implements Rest
                 String parentPath = "/";
 
                 Node parent = session.getNode(parentPath);
-                for (int i = 0; i < parsedSegments.size() - 1; i++) {
-                    String childName = parsedSegments.get(i);
+                for (String childName: parsedSegments) {
                     try {
                         parent = parent.getNode(childName);
                     } catch (PathNotFoundException e) {
