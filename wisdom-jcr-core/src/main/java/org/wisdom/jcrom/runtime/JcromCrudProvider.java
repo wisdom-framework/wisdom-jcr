@@ -150,4 +150,7 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository>
         return "/" + packageName.replace(".", "/");
     }
 
+    public JcrRepository getRepository() {
+        return repository;
+    }
 }

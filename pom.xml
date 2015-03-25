@@ -25,6 +25,7 @@
         <module>wisdom-modeshape</module>
         <module>modeshape-sample</module>
         <module>wisdom-modeshape-web-jcr-rest</module>
+        <module>jcr-test</module>
     </modules>
 
     <licenses>

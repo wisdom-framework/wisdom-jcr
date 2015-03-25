@@ -2,17 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <groupId>org.wisdom-framework.jcr</groupId>
         <artifactId>wisdom-jcr</artifactId>
+        <groupId>org.wisdom-framework.jcr</groupId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>modeshape-sample</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>jcr-test</artifactId>
 
     <packaging>wisdom</packaging>
 
@@ -26,7 +24,22 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.ipojo.annotations</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -61,6 +74,11 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-monitor</artifactId>
+            <version>${wisdom.version}</version>
         </dependency>
     </dependencies>
 
@@ -120,22 +138,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.wisdom-framework</groupId>
-                <artifactId>wisdom-ractivejs-maven-plugin</artifactId>
-                <version>0.1.4</version>
-                <executions>
-                    <execution>
-                        <id>compile-ractivejs-files</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile-ractivejs</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>

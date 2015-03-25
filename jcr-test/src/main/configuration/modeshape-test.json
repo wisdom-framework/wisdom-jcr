@@ -1,0 +1,22 @@
+{
+  "name": "cloud-repository-test",
+  "workspaces": {
+    "predefined": ["default"],
+    "default": "default",
+    "allowCreation": true,
+    "initialContent": {
+      "default": "conf/initialContent/init.xml"
+    }
+  },
+  "security": {
+    "anonymous": {
+      "roles": [
+        "readonly",
+        "readwrite",
+        "admin"
+      ],
+      "useOnFailedLogin": false
+    }
+  },
+  "node-types": ["conf/cnd/cloud.cnd"]
+}
