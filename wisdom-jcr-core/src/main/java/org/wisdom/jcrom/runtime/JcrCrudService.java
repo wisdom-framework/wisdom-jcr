@@ -60,16 +60,6 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     protected AbstractJcrDAO<T> dao;
 
-    /**
-     * Flag used in order to know if the instance is used during a transaction in the current thread.
-     */
-    private static final ThreadLocal<Boolean> transaction = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return false;
-        }
-    };
-
     protected JcrCrudService(JcrRepository repository, Class<T> entityClass) throws RepositoryException {
         this(repository);
         this.entityClass = entityClass;
@@ -86,7 +76,6 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     protected JcrCrudService(JcrRepository repository) {
         this.repository = repository;
-        transaction.set(false);
     }
 
     @Override

@@ -28,21 +28,21 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
+import org.wisdom.api.model.Crud;
 import org.wisdom.jcrom.conf.JcromConfiguration;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by antoine on 14/07/2014.
  */
 @Component(name = JcromCrudProvider.COMPONENT_NAME)
 @Instantiate(name = JcromCrudProvider.INSTANCE_NAME)
-public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository> {
+public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
 
     private Logger logger = LoggerFactory.getLogger(JcromCrudProvider.class);
 
@@ -56,14 +56,10 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository>
 
     private final BundleContext context;
 
-    private BundleTracker<JcrRepository> bundleTracker;
-
-    private Collection<JcrRepository> repos = new HashSet<>();
-
-    private JcrRepository repository;
+    private BundleTracker<List<Crud>> bundleTracker;
 
     @Requires
-    private RepositoryFactory repositoryFactory;
+    private JcrRepository repository;
 
     public JcromCrudProvider(BundleContext bundleContext) {
         context = bundleContext;
@@ -91,19 +87,13 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository>
     }
 
     @Override
-    public JcrRepository addingBundle(Bundle bundle, BundleEvent bundleEvent) {
+    public List<Crud> addingBundle(Bundle bundle, BundleEvent bundleEvent) {
+        List<Crud> cruds = new LinkedList<>();
         if (jcromConfiguration != null) {
             for (String p : jcromConfiguration.getPackages()) {
                 Enumeration<URL> enums = bundle.findEntries(packageNameToPath(p), "*.class", true);
 
                 if (enums != null) {
-                    if (repository == null) {
-                        try {
-                            repository = new JcrRepository(jcromConfiguration, repositoryFactory, applicationConfiguration);
-                        } catch (RepositoryException e) {
-                            logger.error("Can not access repository: " + jcromConfiguration.getRepository(), e);
-                        }
-                    }
 
                     //Load the entities from the bundle
                     do {
@@ -112,7 +102,7 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository>
                             logger.info("Enable mapping in jcrom for " + entry);
                             String className = urlToClassName(entry);
                             Class clazz = bundle.loadClass(className);
-                            repository.addCrudService(clazz, context);
+                            cruds.add(repository.addCrudService(clazz, context));
                         } catch (ClassNotFoundException e) {
                             logger.debug(e.getMessage());
                         } catch (RepositoryException e) {
@@ -125,17 +115,16 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<JcrRepository>
                 }
             }
         }
-        return repository;
+        return cruds;
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, JcrRepository jcrRepository) {
+    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, List<Crud> cruds) {
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, JcrRepository jcrRepository) {
-        jcrRepository.destroy();
-        jcrRepository.getSession().logout();
+    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, List<Crud> cruds) {
+        repository.removeCrudServices(cruds);
     }
 
     private static String urlToClassName(URL url) {
