@@ -70,7 +70,9 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
         jcromConfiguration = JcromConfiguration.fromApplicationConfiguration(applicationConfiguration);
         Thread.currentThread().setContextClassLoader(repositoryFactory.getClass().getClassLoader());
         logger.info("Loading JCR repository " + jcromConfiguration.getRepository());
-        this.repository = repositoryFactory.getRepository(applicationConfiguration.getConfiguration("jcr").getConfiguration(jcromConfiguration.getRepository()).asMap());
+        this.repository = repositoryFactory.getRepository(
+                applicationConfiguration.getConfiguration("jcr")
+                        .getConfiguration(jcromConfiguration.getRepository()).asMap());
         this.jcrom = new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
         Thread.currentThread().setContextClassLoader(JcrRepository.class.getClassLoader());
         this.session = repository.login();
