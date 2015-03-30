@@ -19,15 +19,20 @@
  */
 package org.wisdom.jcrom.multipackage;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wisdom.jcrom.runtime.JcromCrudProvider;
+import org.wisdom.api.model.Crud;
 import org.wisdom.test.parents.WisdomTest;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * TODO write documentation<br>
@@ -44,11 +49,25 @@ public class MultiPackageIT extends WisdomTest {
     private static final Logger logger = LoggerFactory.getLogger(MultiPackageIT.class);
 
     @Inject
-    private JcromCrudProvider jcromCrudProvider;
+    BundleContext context;
+
+    OSGiHelper osgi;
+
+    @Before
+    public void setUp() throws InvalidSyntaxException, InterruptedException {
+        osgi = new OSGiHelper(context);
+    }
+
+    @After
+    public void tearDown() {
+        osgi.dispose();
+    }
 
     @Test
     public void multiPackage() {
-        Assert.assertEquals(2, jcromCrudProvider.getRepository().getCrudServices().size());
+        osgi.waitForService(Crud.class, null, 5000);
+        final List<Crud> cruds = osgi.getServiceObjects(Crud.class);
+        Assert.assertEquals(2, cruds.size());
     }
 
 }
