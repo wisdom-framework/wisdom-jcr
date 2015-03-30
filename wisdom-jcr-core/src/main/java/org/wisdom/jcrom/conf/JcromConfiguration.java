@@ -80,7 +80,7 @@ public class JcromConfiguration {
     }
 
     public List<String> getPackages() {
-        return Arrays.asList(configuration.get(PACKAGES_PREFIX).split(","));
+        return configuration.getList(PACKAGES_PREFIX);
     }
 
     public Dictionary<String, String> toDictionary() {
