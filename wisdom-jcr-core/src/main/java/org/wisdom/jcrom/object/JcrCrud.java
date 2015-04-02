@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Specific Crud interface for JCR allowing to execute JCR queries.
  */
-public interface JcrCrud<T, I extends Serializable> extends Crud<T, I> {
+public interface  JcrCrud<T, I extends Serializable> extends Crud<T, I> {
 
     public T findOneByQuery(String statement, String language);
 

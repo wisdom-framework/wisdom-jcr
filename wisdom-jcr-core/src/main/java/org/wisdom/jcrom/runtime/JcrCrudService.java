@@ -112,6 +112,11 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     @Override
     public T save(T t) {
         String path = repository.getJcrom().getPath(t);
+        try {
+            checkPath(path);
+        } catch (RepositoryException e) {
+            throw new JcrMappingException("Unable to create the parent path " + path, e);
+        }
         String name = repository.getJcrom().getName(t);
         if (path != null) {
             if (exists(name)) {
@@ -119,6 +124,12 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
             }
         }
         return dao.create(t);
+    }
+
+    private void checkPath(String path) throws RepositoryException {
+        if (repository.getJcromConfiguration().isCreatePath() && !repository.getSession().nodeExists(path)) {
+            new JcrTools().findOrCreateNode(repository.getSession(), path);
+        }
     }
 
     @Override

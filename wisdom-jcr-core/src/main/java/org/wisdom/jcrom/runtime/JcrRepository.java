@@ -142,4 +142,8 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     public javax.jcr.Repository get() {
         return repository;
     }
+
+    public JcromConfiguration getJcromConfiguration() {
+        return jcromConfiguration;
+    }
 }

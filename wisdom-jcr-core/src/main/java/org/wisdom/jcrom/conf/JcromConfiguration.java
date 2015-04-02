@@ -22,7 +22,6 @@ package org.wisdom.jcrom.conf;
 import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.configuration.Configuration;
 
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -42,6 +41,8 @@ public class JcromConfiguration {
     public static final String CLEAN_NAMES = "clean.names";
 
     public static final String REPOSITORY = "repository";
+
+    public static final String CREATE_PATH = "create.path";
 
     private Configuration configuration;
 
@@ -69,6 +70,10 @@ public class JcromConfiguration {
 
     public boolean isDynamicInstantiation() {
         return configuration.getBooleanWithDefault(DYNAMIC_INSTANTIATION, true);
+    }
+
+    public boolean isCreatePath() {
+        return configuration.getBooleanWithDefault(CREATE_PATH, true);
     }
 
     public boolean isCleanNames() {
