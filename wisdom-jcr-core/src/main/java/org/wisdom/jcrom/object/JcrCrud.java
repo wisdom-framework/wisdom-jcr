@@ -27,10 +27,32 @@ import java.util.List;
 /**
  * Specific Crud interface for JCR allowing to execute JCR queries.
  */
-public interface  JcrCrud<T, I extends Serializable> extends Crud<T, I> {
+public interface JcrCrud<T, I extends Serializable> extends Crud<T, I> {
 
+    /**
+     * Retieve the first entity returned by the given query in the specified language.
+     *
+     * @param statement the query to execute
+     * @param language  the language of the query.
+     * @return null if the query does not return any result
+     */
     public T findOneByQuery(String statement, String language);
 
+    /**
+     * Execute a JCR query in the specified language.
+     *
+     * @param statement the query to execute
+     * @param language  the language of the query
+     * @return the list of found entites. An empty list if no entity was found.
+     */
     public List<T> findByQuery(String statement, String language);
+
+    /**
+     * Retrieve an entity from its JCR absolute path.
+     *
+     * @param absolutePath
+     * @return
+     */
+    public T findByPath(String absolutePath);
 
 }

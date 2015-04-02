@@ -27,6 +27,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.ow2.chameleon.testing.helpers.OSGiHelper;
 import org.wisdom.api.model.Crud;
 import org.wisdom.jcrom.multipackage.entity1.Hello;
+import org.wisdom.jcrom.object.JcrCrud;
 import org.wisdom.test.parents.WisdomTest;
 
 import javax.inject.Inject;
@@ -51,16 +52,7 @@ public class BasicCrudIT extends WisdomTest {
 
     @Test
     public void testSave() {
-        osgi.waitForService(Crud.class, null, 5000);
-        final List<Crud> cruds = osgi.getServiceObjects(Crud.class);
-        Crud<Hello, String> helloCrud = null;
-        for (Crud crud: cruds) {
-           if (crud.getEntityClass().equals(Hello.class)) {
-               helloCrud = crud;
-               break;
-           }
-        }
-        Assert.assertNotNull(helloCrud);
+        Crud<Hello, String> helloCrud = getHelloCrud();
         Hello hello = new Hello();
         hello.setPath("/messages");
         hello.setName("Hello");
@@ -68,6 +60,32 @@ public class BasicCrudIT extends WisdomTest {
         Hello hello1 = helloCrud.findOne("Hello");
         Assert.assertNotNull(hello1);
         Assert.assertEquals("/messages/Hello", hello1.getPath());
+    }
+
+    @Test
+    public void testFindByPath() {
+        JcrCrud<Hello, String> helloCrud = (JcrCrud<Hello, String>) getHelloCrud();
+        Assert.assertNotNull(helloCrud);
+        Hello hello = new Hello();
+        hello.setPath("/messages");
+        hello.setName("Hello2");
+        helloCrud.save(hello);
+        Hello hello1 = helloCrud.findByPath("/messages/Hello2");
+        Assert.assertNotNull(hello1);
+    }
+
+    private Crud<Hello, String> getHelloCrud() {
+        osgi.waitForService(Crud.class, null, 5000);
+        final List<Crud> cruds = osgi.getServiceObjects(Crud.class);
+        Crud<Hello, String> helloCrud = null;
+        for (Crud crud : cruds) {
+            if (crud.getEntityClass().equals(Hello.class)) {
+                helloCrud = crud;
+                break;
+            }
+        }
+        Assert.assertNotNull(helloCrud);
+        return helloCrud;
     }
 
 }

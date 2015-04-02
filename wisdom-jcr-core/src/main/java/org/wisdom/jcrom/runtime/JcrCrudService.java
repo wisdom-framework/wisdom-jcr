@@ -281,6 +281,11 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         return null;
     }
 
+    @Override
+    public T findByPath(String absolutePath) {
+        return dao.get(absolutePath);
+    }
+
     protected QueryResult executeQuery(String statement, String language) {
         try {
             javax.jcr.query.QueryManager queryManager = repository.getSession().getWorkspace().getQueryManager();
