@@ -38,6 +38,7 @@ To use wisdom-jcr, you need to configure JCROM and the JCR repository used.
   - ```packages``` Configure packages that need to be mapped by JCROM in application.conf in the jcrom entry. Several packages can be listed comma-separated there.
   - ```dynamic.instantiation``` flag to enable [dynamic instantiation](https://code.google.com/p/jcrom/wiki/DynamicInstantiation) for JCROM
   - ```clean.names``` flag to enable [automatic name cleaning](http://jcrom.googlecode.com/svn/branches/2.0.0/jcrom/apidocs/org/jcrom/Jcrom.html#Jcrom(boolean)) for JCROM
+  - ```create.path``` if true, automatically create missing parent nodes when saving an entity 
   - ```env.repository``` the name of the repository to use with JCROM for the given environment
 
 ```
@@ -45,6 +46,7 @@ jcrom {
     packages = todo.models,todo.other.models
     dynamic.instantiation = true
     clean.names = true
+    create.path = true
     dev.repository = sample-repository-dev
     test.repository = sample-repository-test
     prod.repository = sample-repository-prod
