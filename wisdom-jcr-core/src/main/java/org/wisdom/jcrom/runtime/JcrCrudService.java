@@ -127,7 +127,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     }
 
     private void checkPath(String path) throws RepositoryException {
-        if (repository.getJcromConfiguration().isCreatePath() && !repository.getSession().nodeExists(path)) {
+        if (path != null && repository.getJcromConfiguration().isCreatePath() && !repository.getSession().nodeExists(path)) {
             new JcrTools().findOrCreateNode(repository.getSession(), path);
         }
     }
