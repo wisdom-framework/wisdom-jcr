@@ -30,6 +30,7 @@ import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.JcromConfiguration;
 import org.wisdom.jcrom.object.JcrCrud;
+import org.wisdom.jcrom.service.JcromProvider;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
@@ -53,8 +54,6 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     private JcromConfiguration jcromConfiguration;
 
-    private Jcrom jcrom;
-
     private Session session;
 
     private Map<JcrCrud, ServiceRegistration> crudServiceRegistrations = new HashMap<>();
@@ -65,6 +64,11 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     @Requires
     RepositoryFactory repositoryFactory;
 
+    @Requires(optional = true, defaultimplementation = DefaultJcromProvider.class)
+    JcromProvider jcromProvider;
+
+    private Jcrom jcrom;
+
     @Validate
     public void start() throws RepositoryException {
         jcromConfiguration = JcromConfiguration.fromApplicationConfiguration(applicationConfiguration);
@@ -73,7 +77,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
         this.repository = repositoryFactory.getRepository(
                 applicationConfiguration.getConfiguration("jcr")
                         .getConfiguration(jcromConfiguration.getRepository()).asMap());
-        this.jcrom = new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
+        this.jcrom = jcromProvider.getJcrom(jcromConfiguration);
         Thread.currentThread().setContextClassLoader(JcrRepository.class.getClassLoader());
         this.session = repository.login();
     }
