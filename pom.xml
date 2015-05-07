@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.wisdom-framework</groupId>
         <artifactId>wisdom-framework</artifactId>
-        <version>0.8.0</version>
+        <version>0.9.0</version>
     </parent>
 
     <groupId>org.wisdom-framework.jcr</groupId>
@@ -42,7 +42,7 @@
     </scm>
 
     <properties>
-        <wisdom.version>0.8.0</wisdom.version>
+        <wisdom.version>0.9.0</wisdom.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <modeshape.version>4.2.0.Final</modeshape.version>
