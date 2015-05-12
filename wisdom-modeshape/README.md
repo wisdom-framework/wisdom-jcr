@@ -53,5 +53,6 @@ See [modeshape documentation](http://wisdom-framework.org/reference/0.8.0/index.
    <excludeFromApplication>true</excludeFromApplication>
   </libraries>
   <disableDistributionPackaging>true</disableDistributionPackaging>
- </configuration></plugin>
+ </configuration>
+</plugin>
 ````
