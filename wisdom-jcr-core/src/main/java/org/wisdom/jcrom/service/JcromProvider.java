@@ -22,6 +22,8 @@ package org.wisdom.jcrom.service;
 import org.jcrom.Jcrom;
 import org.wisdom.jcrom.conf.JcromConfiguration;
 
+import javax.jcr.Session;
+
 /**
  * Service for providing instance of Jcrom.
  *<br>
@@ -30,7 +32,8 @@ import org.wisdom.jcrom.conf.JcromConfiguration;
  * @author Bastien
  *
  */
+
 public interface JcromProvider {
 
-    public Jcrom getJcrom(JcromConfiguration jcromConfiguration);
+    public Jcrom getJcrom(JcromConfiguration jcromConfiguration, Session session);
 }

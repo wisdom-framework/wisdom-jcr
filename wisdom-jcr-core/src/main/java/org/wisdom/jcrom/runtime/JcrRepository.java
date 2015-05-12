@@ -64,7 +64,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     @Requires
     RepositoryFactory repositoryFactory;
 
-    @Requires(optional = true, defaultimplementation = DefaultJcromProvider.class)
+    @Requires(defaultimplementation = DefaultJcromProvider.class, optional = true)
     JcromProvider jcromProvider;
 
     private Jcrom jcrom;
@@ -77,9 +77,9 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
         this.repository = repositoryFactory.getRepository(
                 applicationConfiguration.getConfiguration("jcr")
                         .getConfiguration(jcromConfiguration.getRepository()).asMap());
-        this.jcrom = jcromProvider.getJcrom(jcromConfiguration);
         Thread.currentThread().setContextClassLoader(JcrRepository.class.getClassLoader());
         this.session = repository.login();
+        this.jcrom = jcromProvider.getJcrom(jcromConfiguration, this.session);
     }
 
     @Invalidate

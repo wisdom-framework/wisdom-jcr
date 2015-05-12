@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.wisdom.jcrom.conf.JcromConfiguration;
 import org.wisdom.jcrom.service.JcromProvider;
 
+import javax.jcr.Session;
+
 /**
  * Default implementation of {@link org.wisdom.jcrom.service.JcromProvider}
  *<br>
@@ -45,7 +47,7 @@ public class DefaultJcromProvider implements JcromProvider {
     }
 
     @Override
-    public Jcrom getJcrom(JcromConfiguration jcromConfiguration) {
+    public Jcrom getJcrom(JcromConfiguration jcromConfiguration, Session session) {
         if (jcrom == null) {
             jcrom = new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
         }
