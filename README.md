@@ -2,12 +2,23 @@
 
 This project integrates JCR repositories within Wisdom-Framework.
 
-The Wisdom-JCR project relies on [JCROM](https://code.google.com/p/jcrom/) to map objects between Wisdom and the JCR repository.
+## Introduction
 
-## Supported repositories
+### JCR
 
-The Wisdom-JCR project is compatible with any JCR implementation. It expects that a service provides a `javax.jcr.RepositoryFactory` to load the repository.
-Currently, the wisdom-modeshape module provides a direct integration with modeshape repositories.
+JCR is a Content Repository API for Java and is speficied in the [JSR 283](https://jcp.org/en/jsr/detail?id=283): Content Repository for JavaTM Technology API Version 2.0. See [Wikipedia](http://en.wikipedia.org/wiki/Content_repository_API_for_Java) for an overview of the JCR API.
+
+### Implementations
+
+Several JCR implementations exists. The most famous open source implementations are [Apache Jackrabbit](http://jackrabbit.apache.org/jcr/index.html) and [ModeShape](http://modeshape.jboss.org)
+
+The Wisdom-JCR project is compatible with any JCR implementation. It expects that a service provides a [`javax.jcr.RepositoryFactory`](http://www.day.com/maven/jsr170/javadocs/jcr-2.0/javax/jcr/RepositoryFactory.html) to load the repository.
+
+Currently, the [wisdom-modeshape](https://github.com/wisdom-framework/wisdom-jcr/tree/master/wisdom-modeshape) module provides an integration with ModeShape repositories.
+
+### Object mapping
+
+JCR repositories do not provide a mapping layer with Java entities. The Wisdom-JCR project relies on [JCROM](https://code.google.com/p/jcrom/) to map objects between Wisdom and the JCR repository.
 
 ## Usage
 
@@ -20,7 +31,8 @@ Add the wisdom-jcr-core module to your project:
 </dependency>
 ````
 
-And pick-up a module providing access to the repository implementation, for example wisdom-modeshape:
+And pick-up a module providing access to the repository implementation, for example wisdom-modeshape :
+
 ````
 <dependency>
     <groupId>org.wisdom-framework</groupId>
@@ -29,17 +41,38 @@ And pick-up a module providing access to the repository implementation, for exam
 </dependency>
 ````
 
+The full list of Maven dependencies depends on the JCR implementation used. See [wisdom-modeshape](https://github.com/wisdom-framework/wisdom-jcr/tree/master/wisdom-modeshape) module documentation for the dependencies to add for the ModeShape implementation.
+
+
 ## Configuration
 
-To use wisdom-jcr, you need to configure JCROM and the JCR repository used.
+wisdom-jcr reads its configuration from the wisdom application configuration file.
+
+Two sections are used in the configuration file
+
+  - the **jcrom** section configures the object mapping layer
+  - the **jcr** section configures which JCR repositories should be loaded
 
 ### JCROM configuration
 
-  - ```packages``` Configure packages that need to be mapped by JCROM in application.conf in the jcrom entry. Several packages can be listed comma-separated there.
+JCROM configuration keys starts with **jcrom**. This part allow to configure the mapping between the JCR repository and the Java entities.
+
+Basic JCROM options :
+
+  - ```packages``` Configure packages that need to be mapped by JCROM. Several packages can be listed comma-separated there.
   - ```dynamic.instantiation``` flag to enable [dynamic instantiation](https://code.google.com/p/jcrom/wiki/DynamicInstantiation) for JCROM
-  - ```clean.names``` flag to enable [automatic name cleaning](http://jcrom.googlecode.com/svn/branches/2.0.0/jcrom/apidocs/org/jcrom/Jcrom.html#Jcrom(boolean)) for JCROM
+  - ```clean.names``` flag to enable [automatic name cleaning](http://jcrom.googlecode.com/svn/branches/2.0.0/jcrom/apidocs/org/jcrom/Jcrom.html#Jcrom(boolean)) for JCROM 
+  
+
+Additionnal options :
+
   - ```create.path``` if true, automatically create missing parent nodes when saving an entity 
-  - ```env.repository``` the name of the repository to use with JCROM for the given environment
+
+This is also the place where the link with the JCR repository used is configured :
+
+  - ```"env".repository``` the name of the repository to use with JCROM for the given environment "env"
+
+Full example :
 
 ```
 jcrom {
@@ -55,9 +88,9 @@ jcrom {
 
 ### JCR configuration
 
-To use wisdom-jcr, a repository matching the name of the repository specified in the JCROM configuration must be available.
+The JCR repositories declared in the JCROM configuration must also be configured in the wisdom application configuration file, starting with a **jcr** key. Each jcr repository must be declared using a key matching the repository named referenced in the JCROM configuration.
 
-For each repository to load, you can specify a map of parameters to pass to the RepositoryFactory in the jcr configuration block. These parameters depends on the repository vendor. The following example is for the Modeshape repository factory provided with the wisdom-modeshape module:
+For each repository to load, you can specify a map of parameters to pass to the [RepositoryFactory](http://www.day.com/maven/jsr170/javadocs/jcr-2.0/javax/jcr/RepositoryFactory.html) in the jcr configuration block. These parameters depends on the repository vendor. The following example is for the Modeshape repository factory provided with the wisdom-modeshape module :
 
 ```
 jcr {
@@ -67,3 +100,28 @@ jcr {
     }
 }
 ```
+
+Checkout an [example](https://github.com/wisdom-framework/wisdom-jcr/blob/master/modeshape-sample/src/main/configuration/application.conf) of configuration in the [modeshape-sample](https://github.com/wisdom-framework/wisdom-jcr/tree/master/modeshape-sample) project.
+
+### ModeShape configuration
+
+This section is specific to ModeShape repositories.
+
+The org.modeshape.jcr.URL declared in the configuration file references a json file used to configure the ModeShape repository.
+
+See [ModeShape documentation](https://docs.jboss.org/author/display/MODE/ModeShape+in+Java+applications#ModeShapeinJavaapplications-ModeShaperepositoryconfigurationfiles) for more details about the modeshape configuration file.
+
+> Note that the name of the repository declared in the jcr part of the wisdom configuration must match the name of the repository declared in the modeshape json configuration file
+
+ModeShape configuration file might itself reference other configuration files such as [cnd](https://docs.jboss.org/author/display/MODE/Registering+custom+node+types) files defining the [node types](https://docs.jboss.org/author/display/MODE/Defining+custom+node+types) used in the repository.
+
+## Sample
+
+The [modeshape-sample](https://github.com/wisdom-framework/wisdom-jcr/tree/master/modeshape-sample) provides a simple wisdom application demonstrating the use of the wisdom-jcr module with a ModeShape repository.
+
+## Links
+
+### JCR
+
+  - [Java Content Repository: The Best Of Both Worlds](http://java.dzone.com/articles/java-content-repository-best)
+  - [JCR v2.0 Specification (HTML version)](http://www.day.com/specs/jcr/2.0/)
