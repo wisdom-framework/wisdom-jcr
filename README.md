@@ -2,12 +2,23 @@
 
 This project integrates JCR repositories within Wisdom-Framework.
 
-The Wisdom-JCR project relies on [JCROM](https://code.google.com/p/jcrom/) to map objects between Wisdom and the JCR repository.
+## Introduction
 
-## Supported repositories
+### JCR
+
+JCR is a Content Repository API for Java and is speficied in the [JSR 283](https://jcp.org/en/jsr/detail?id=283): Content Repository for JavaTM Technology API Version 2.0. See [Wikipedia](http://en.wikipedia.org/wiki/Content_repository_API_for_Java) for an overview of the JCR API.
+
+### Implementations
+
+Several JCR implementations exists. The most famous open source implementations are [Apache Jackrabbit](http://jackrabbit.apache.org/jcr/index.html) and [ModeShape](http://modeshape.jboss.org)
 
 The Wisdom-JCR project is compatible with any JCR implementation. It expects that a service provides a `javax.jcr.RepositoryFactory` to load the repository.
-Currently, the wisdom-modeshape module provides a direct integration with modeshape repositories.
+
+Currently, the [wisdom-modeshape](https://github.com/wisdom-framework/wisdom-jcr/tree/master/wisdom-modeshape) module provides an integration with ModeShape repositories.
+
+### Object mapping
+
+JCR repositories do not provide a mapping layer with Java entities. The Wisdom-JCR project relies on [JCROM](https://code.google.com/p/jcrom/) to map objects between Wisdom and the JCR repository.
 
 ## Usage
 
@@ -67,3 +78,10 @@ jcr {
     }
 }
 ```
+
+## Links
+
+### JCR
+
+  - [Java Content Repository: The Best Of Both Worlds](http://java.dzone.com/articles/java-content-repository-best)
+  - [JCR v2.0 Specification (HTML version)](http://www.day.com/specs/jcr/2.0/)
