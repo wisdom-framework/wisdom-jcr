@@ -31,7 +31,8 @@ Add the wisdom-jcr-core module to your project:
 </dependency>
 ````
 
-And pick-up a module providing access to the repository implementation, for example wisdom-modeshape:
+And pick-up a module providing access to the repository implementation, for example wisdom-modeshape :
+
 ````
 <dependency>
     <groupId>org.wisdom-framework</groupId>
@@ -39,6 +40,9 @@ And pick-up a module providing access to the repository implementation, for exam
     <version>1.0-SNAPSHOT</version>
 </dependency>
 ````
+
+The full list of Maven dependencies depends on the JCR implementation used. See [wisdom-modeshape](https://github.com/wisdom-framework/wisdom-jcr/tree/master/wisdom-modeshape) module documentation for the dependencies to add for the ModeShape implementation.
+
 
 ## Configuration
 
