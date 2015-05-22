@@ -39,7 +39,7 @@ See [modeshape documentation](http://wisdom-framework.org/reference/0.8.0/index.
 <plugin>
  <groupId>org.wisdom-framework</groupId>
  <artifactId>wisdom-maven-plugin</artifactId>
- <version>0.9.0</version>
+ <version>0.9.1</version>
  <extensions>true</extensions>
  <configuration>
   <libraries>
