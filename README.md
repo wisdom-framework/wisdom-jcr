@@ -115,6 +115,21 @@ See [ModeShape documentation](https://docs.jboss.org/author/display/MODE/ModeSha
 
 ModeShape configuration file might itself reference other configuration files such as [cnd](https://docs.jboss.org/author/display/MODE/Registering+custom+node+types) files defining the [node types](https://docs.jboss.org/author/display/MODE/Defining+custom+node+types) used in the repository.
 
+To allow Modeshape to correctly load cnd files when running tests, the following configuration must be added to the surefire plugin in your pom:
+
+````
+<plugin>    
+    <artifactId>maven-surefire-plugin</artifactId>
+    <configuration>
+        <additionalClasspathElements>
+            <additionalClasspathElement>${basedir}/target/wisdom</additionalClasspathElement>
+        </additionalClasspathElements>
+    </configuration>
+</plugin>
+````
+
+See [#12](https://github.com/wisdom-framework/wisdom-jcr/issues/12) for more information about this issue.
+
 ## Sample
 
 The [modeshape-sample](https://github.com/wisdom-framework/wisdom-jcr/tree/master/modeshape-sample) provides a simple wisdom application demonstrating the use of the wisdom-jcr module with a ModeShape repository.
