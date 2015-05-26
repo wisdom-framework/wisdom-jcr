@@ -27,7 +27,7 @@ Add the wisdom-jcr-core module to your project:
 <dependency>
     <groupId>org.wisdom-framework</groupId>
     <artifactId>wisdom-jcr-core</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ````
 
@@ -37,7 +37,7 @@ And pick-up a module providing access to the repository implementation, for exam
 <dependency>
     <groupId>org.wisdom-framework</groupId>
     <artifactId>wisdom-modeshape</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ````
 
