@@ -25,7 +25,7 @@ JCR repositories do not provide a mapping layer with Java entities. The Wisdom-J
 Add the wisdom-jcr-core module to your project:
 ````
 <dependency>
-    <groupId>org.wisdom-framework</groupId>
+    <groupId>org.wisdom-framework.jcr</groupId>
     <artifactId>wisdom-jcr-core</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 </dependency>
@@ -35,7 +35,7 @@ And pick-up a module providing access to the repository implementation, for exam
 
 ````
 <dependency>
-    <groupId>org.wisdom-framework</groupId>
+    <groupId>org.wisdom-framework.jcr</groupId>
     <artifactId>wisdom-modeshape</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 </dependency>
