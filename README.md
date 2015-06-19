@@ -25,9 +25,9 @@ JCR repositories do not provide a mapping layer with Java entities. The Wisdom-J
 Add the wisdom-jcr-core module to your project:
 ````
 <dependency>
-    <groupId>org.wisdom-framework</groupId>
+    <groupId>org.wisdom-framework.jcr</groupId>
     <artifactId>wisdom-jcr-core</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ````
 
@@ -35,9 +35,9 @@ And pick-up a module providing access to the repository implementation, for exam
 
 ````
 <dependency>
-    <groupId>org.wisdom-framework</groupId>
+    <groupId>org.wisdom-framework.jcr</groupId>
     <artifactId>wisdom-modeshape</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ````
 
@@ -114,6 +114,21 @@ See [ModeShape documentation](https://docs.jboss.org/author/display/MODE/ModeSha
 > Note that the name of the repository declared in the jcr part of the wisdom configuration must match the name of the repository declared in the modeshape json configuration file
 
 ModeShape configuration file might itself reference other configuration files such as [cnd](https://docs.jboss.org/author/display/MODE/Registering+custom+node+types) files defining the [node types](https://docs.jboss.org/author/display/MODE/Defining+custom+node+types) used in the repository.
+
+To allow Modeshape to correctly load cnd files when running tests, the following configuration must be added to the failsafe plugin in your pom:
+
+````
+<plugin>    
+    <artifactId>maven-failsafe-plugin</artifactId>
+    <configuration>
+        <additionalClasspathElements>
+            <additionalClasspathElement>${basedir}/target/wisdom</additionalClasspathElement>
+        </additionalClasspathElements>
+    </configuration>
+</plugin>
+````
+
+See [#12](https://github.com/wisdom-framework/wisdom-jcr/issues/12) for more information about this issue.
 
 ## Sample
 
