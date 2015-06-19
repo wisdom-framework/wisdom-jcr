@@ -115,11 +115,11 @@ See [ModeShape documentation](https://docs.jboss.org/author/display/MODE/ModeSha
 
 ModeShape configuration file might itself reference other configuration files such as [cnd](https://docs.jboss.org/author/display/MODE/Registering+custom+node+types) files defining the [node types](https://docs.jboss.org/author/display/MODE/Defining+custom+node+types) used in the repository.
 
-To allow Modeshape to correctly load cnd files when running tests, the following configuration must be added to the surefire plugin in your pom:
+To allow Modeshape to correctly load cnd files when running tests, the following configuration must be added to the failsafe plugin in your pom:
 
 ````
 <plugin>    
-    <artifactId>maven-surefire-plugin</artifactId>
+    <artifactId>maven-failsafe-plugin</artifactId>
     <configuration>
         <additionalClasspathElements>
             <additionalClasspathElement>${basedir}/target/wisdom</additionalClasspathElement>
