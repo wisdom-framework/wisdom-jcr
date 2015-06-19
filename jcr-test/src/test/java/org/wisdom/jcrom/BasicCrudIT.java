@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wisdom.jcrom.multipackage;
+package org.wisdom.jcrom;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,12 +26,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.ow2.chameleon.testing.helpers.OSGiHelper;
 import org.wisdom.api.model.Crud;
-import org.wisdom.jcrom.multipackage.entity1.Hello;
+import org.wisdom.jcrom.entity1.Hello;
 import org.wisdom.jcrom.object.JcrCrud;
 import org.wisdom.test.parents.WisdomTest;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -45,14 +44,17 @@ public class BasicCrudIT extends WisdomTest {
 
     OSGiHelper osgi;
 
+    OSGiUtils osGiUtils;
+
     @Before
     public void setUp() throws InvalidSyntaxException, InterruptedException {
         osgi = new OSGiHelper(context);
+        osGiUtils = new OSGiUtils(osgi);
     }
 
     @Test
     public void testSave() {
-        Crud<Hello, String> helloCrud = getHelloCrud();
+        Crud<Hello, String> helloCrud = osGiUtils.getCrud(Hello.class);
         Hello hello = new Hello();
         hello.setPath("/messages");
         hello.setName("Hello");
@@ -64,7 +66,7 @@ public class BasicCrudIT extends WisdomTest {
 
     @Test
     public void testFindByPath() {
-        JcrCrud<Hello, String> helloCrud = (JcrCrud<Hello, String>) getHelloCrud();
+        JcrCrud<Hello, String> helloCrud = (JcrCrud<Hello, String>) osGiUtils.getCrud(Hello.class);
         Assert.assertNotNull(helloCrud);
         Hello hello = new Hello();
         hello.setPath("/messages");
@@ -74,18 +76,5 @@ public class BasicCrudIT extends WisdomTest {
         Assert.assertNotNull(hello1);
     }
 
-    private Crud<Hello, String> getHelloCrud() {
-        osgi.waitForService(Crud.class, null, 5000);
-        final List<Crud> cruds = osgi.getServiceObjects(Crud.class);
-        Crud<Hello, String> helloCrud = null;
-        for (Crud crud : cruds) {
-            if (crud.getEntityClass().equals(Hello.class)) {
-                helloCrud = crud;
-                break;
-            }
-        }
-        Assert.assertNotNull(helloCrud);
-        return helloCrud;
-    }
 
 }

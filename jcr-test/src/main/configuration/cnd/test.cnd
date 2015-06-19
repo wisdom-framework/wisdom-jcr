@@ -2,3 +2,4 @@
 
 [test:hello] > nt:unstructured
 [test:world] > nt:unstructured
+[test:testentity] > nt:unstructured

@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wisdom.jcrom.multipackage.entity2;
+package org.wisdom.jcrom.entity2;
 
 import org.jcrom.AbstractJcrEntity;
 import org.jcrom.annotations.JcrNode;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 @JcrNode(nodeType = "test:world")
 public class World extends AbstractJcrEntity {
     /**
-     * The famous {@link org.slf4j.Logger}
+     * The famous {@link Logger}
      */
     private static final Logger logger = LoggerFactory.getLogger(World.class);
 

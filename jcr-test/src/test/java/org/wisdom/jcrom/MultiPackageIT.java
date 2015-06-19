@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package org.wisdom.jcrom.multipackage;
+package org.wisdom.jcrom;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class MultiPackageIT extends WisdomTest {
     /**
-     * The famous {@link org.slf4j.Logger}
+     * The famous {@link Logger}
      */
     private static final Logger logger = LoggerFactory.getLogger(MultiPackageIT.class);
 
@@ -60,7 +60,11 @@ public class MultiPackageIT extends WisdomTest {
 
     @After
     public void tearDown() {
-        osgi.dispose();
+        try {
+            osgi.dispose();
+        } catch (Exception e) {
+            // ignore
+        }
     }
 
     @Test

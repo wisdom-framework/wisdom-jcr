@@ -80,6 +80,11 @@
             <artifactId>wisdom-monitor</artifactId>
             <version>${wisdom.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.tinybundles</groupId>
+            <artifactId>tinybundles</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -134,6 +139,9 @@
                                     <value>org.wisdom.test.WisdomRunListener</value>
                                 </property>
                             </properties>
+                            <additionalClasspathElements>
+                                <additionalClasspathElement>${basedir}/target/wisdom</additionalClasspathElement>
+                            </additionalClasspathElements>
                         </configuration>
                     </execution>
                 </executions>
@@ -141,10 +149,11 @@
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
-                    <!-- should not be deployed, it's a sample -->
+                    <!-- should not be deployed, it's a test -->
                     <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>
