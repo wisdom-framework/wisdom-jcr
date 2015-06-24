@@ -64,7 +64,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     @Requires
     RepositoryFactory repositoryFactory;
 
-    @Requires(defaultimplementation = DefaultJcromProvider.class, optional = true)
+    @Requires(defaultimplementation = DefaultJcromProvider.class, optional = true, timeout = 1000)
     JcromProvider jcromProvider;
 
     private Jcrom jcrom;
