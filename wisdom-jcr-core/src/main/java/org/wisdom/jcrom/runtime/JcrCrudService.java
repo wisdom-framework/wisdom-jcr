@@ -20,6 +20,7 @@
 package org.wisdom.jcrom.runtime;
 
 import org.jcrom.JcrMappingException;
+import org.jcrom.Jcrom;
 import org.jcrom.annotations.JcrNode;
 import org.jcrom.dao.AbstractJcrDAO;
 import org.jcrom.util.NodeFilter;
@@ -37,6 +38,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,11 +61,14 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     protected String nodeType;
 
     protected AbstractJcrDAO<T> dao;
+    
+    private Jcrom jcrom;
 
-    protected JcrCrudService(JcrRepository repository, Class<T> entityClass) throws RepositoryException {
-        this(repository);
+    protected JcrCrudService(JcrRepository repository, Class<T> entityClass, Jcrom jcrom) throws RepositoryException {
+        this.repository = repository;
         this.entityClass = entityClass;
-        dao = new AbstractJcrDAO<T>(entityClass, repository.getSession(), repository.getJcrom()) {
+        this.jcrom = jcrom;
+        dao = new AbstractJcrDAO<T>(entityClass, repository.getSession(), jcrom) {
         };
         JcrNode jcrNode = ReflectionUtils.getJcrNodeAnnotation(entityClass);
         if (jcrNode != null) {
@@ -72,10 +77,6 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         if (nodeType == null) {
             throw new JcrMappingException("Can not use JcrCrudService on a class with no node type, please annotate the class " + entityClass + " with the JcrNode annotations and specify its nodeType");
         }
-    }
-
-    protected JcrCrudService(JcrRepository repository) {
-        this.repository = repository;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     @Override
     public T delete(T t) {
-        dao.remove(repository.getJcrom().getPath(t));
+        dao.remove(jcrom.getPath(t));
         return t;
     }
 
@@ -111,13 +112,13 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     @Override
     public T save(T t) {
-        String path = repository.getJcrom().getPath(t);
+        String path = jcrom.getPath(t);
         try {
             checkPath(path);
         } catch (RepositoryException e) {
             throw new JcrMappingException("Unable to create the parent path " + path, e);
         }
-        String name = repository.getJcrom().getName(t);
+        String name = jcrom.getName(t);
         if (path != null) {
             if (exists(name)) {
                 return dao.update(t);

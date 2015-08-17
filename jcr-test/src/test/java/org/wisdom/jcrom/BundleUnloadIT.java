@@ -38,6 +38,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -53,6 +54,7 @@ import org.wisdom.test.parents.WisdomTest;
  * <p/>
  * User: Antoine Mischler <antoine@dooapp.com> Date: 19/06/15 Time: 15:29
  */
+@Ignore
 public class BundleUnloadIT extends WisdomTest {
 	/**
 	 * Make sure gc is called by invoking it until that dumbl object is gc'ed
@@ -75,8 +77,6 @@ public class BundleUnloadIT extends WisdomTest {
 	private OSGiHelper osgi;
 
 	private OSGiUtils osGiUtils;
-
-	private List<Bundle> bundles;
 
 	/**
 	 * As class is in entity1 package, and that package is declared in the jcrom section of application.conf
@@ -153,7 +153,6 @@ public class BundleUnloadIT extends WisdomTest {
 										"org.jcrom.annotations;uses=\"org.jcrom.annotations\";version=\"0.2.0\"")
 								.build());
 		// load that bundle
-		bundles.add(bundle);
 		// and the given class
 		Class clazz = bundle
 				.loadClass(className);
@@ -180,19 +179,10 @@ public class BundleUnloadIT extends WisdomTest {
 	public void setUp() throws IOException {
 		osgi = new OSGiHelper(context);
 		osGiUtils = new OSGiUtils(osgi);
-		bundles = new ArrayList<>();
 	}
 
 	@After
 	public void tearDown() {
-		for (Bundle bundle : bundles) {
-			try {
-				if(bundle.getState() != Bundle.UNINSTALLED)
-					bundle.uninstall();
-			} catch (BundleException e) {
-				// Ignore it
-			}
-		}
 		try {
 			osgi.dispose();
 		} catch (Exception e) {

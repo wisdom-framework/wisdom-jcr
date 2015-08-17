@@ -35,15 +35,15 @@ import javax.jcr.Session;
  * @author Bastien
  *
  */
-public class DefaultJcromProvider implements JcromProvider {
+public class SingletonJcromProvider implements JcromProvider {
     /**
      * The famous {@link org.slf4j.Logger}
      */
-    private static final Logger logger = LoggerFactory.getLogger(DefaultJcromProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(SingletonJcromProvider.class);
 
     private Jcrom jcrom;
 
-    public DefaultJcromProvider() {
+    public SingletonJcromProvider() {
     }
 
     @Override
