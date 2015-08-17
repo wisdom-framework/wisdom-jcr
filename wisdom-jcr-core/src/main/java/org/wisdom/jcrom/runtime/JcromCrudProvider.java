@@ -20,6 +20,7 @@
 package org.wisdom.jcrom.runtime;
 
 import org.apache.felix.ipojo.annotations.*;
+import org.jcrom.Jcrom;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -30,8 +31,10 @@ import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.model.Crud;
 import org.wisdom.jcrom.conf.JcromConfiguration;
+import org.wisdom.jcrom.service.JcromProvider;
 
 import javax.jcr.RepositoryException;
+
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -42,7 +45,7 @@ import java.util.List;
  */
 @Component(name = JcromCrudProvider.COMPONENT_NAME)
 @Instantiate(name = JcromCrudProvider.INSTANCE_NAME)
-public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
+public class JcromCrudProvider implements BundleTrackerCustomizer<JcromBundleContext> {
 
     private Logger logger = LoggerFactory.getLogger(JcromCrudProvider.class);
 
@@ -56,10 +59,13 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
 
     private final BundleContext context;
 
-    private BundleTracker<List<Crud>> bundleTracker;
+    private BundleTracker<JcromBundleContext> bundleTracker;
 
     @Requires
     private JcrRepository repository;
+
+    @Requires(defaultimplementation = FactoryJcromProvider.class, optional = true, timeout = 1000)
+    JcromProvider jcromProvider;
 
     public JcromCrudProvider(BundleContext bundleContext) {
         context = bundleContext;
@@ -87,14 +93,17 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
     }
 
     @Override
-    public List<Crud> addingBundle(Bundle bundle, BundleEvent bundleEvent) {
-        List<Crud> cruds = new LinkedList<>();
+    public JcromBundleContext addingBundle(Bundle bundle, BundleEvent bundleEvent) {
+    	JcromBundleContext returned = null;
+
         if (jcromConfiguration != null) {
             for (String p : jcromConfiguration.getPackages()) {
                 Enumeration<URL> enums = bundle.findEntries(packageNameToPath(p), "*.class", true);
 
                 if (enums != null) {
-
+                	//lazy create the jcrom bundle context the first time it's needed
+                	if(returned==null)
+                		returned = createJcromBundleContext();
                     //Load the entities from the bundle
                     do {
                         URL entry = enums.nextElement();
@@ -102,7 +111,7 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
                             logger.info("Enable mapping in jcrom for " + entry);
                             String className = urlToClassName(entry);
                             Class clazz = bundle.loadClass(className);
-                            cruds.add(repository.addCrudService(clazz, context));
+                            returned.addCrudService(clazz, context, repository);
                         } catch (ClassNotFoundException e) {
                             logger.debug(e.getMessage());
                         } catch (RepositoryException e) {
@@ -115,16 +124,28 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
                 }
             }
         }
-        return cruds;
+        // When bundle is added, do not forget to add its jcrom bundle context to our jcr repository (in order
+        // to return the crud list
+        repository.addBundleContext(returned);
+        return returned;
+    }
+
+    
+	private JcromBundleContext createJcromBundleContext() {
+		Jcrom jcrom = jcromProvider.getJcrom(jcromConfiguration, repository.getSession());
+		return new JcromBundleContext(jcrom, jcromConfiguration);
+	}
+
+    @Override
+    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, JcromBundleContext cruds) {
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, List<Crud> cruds) {
-    }
-
-    @Override
-    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, List<Crud> cruds) {
-        repository.removeCrudServices(cruds);
+    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, JcromBundleContext cruds) {
+    	if(cruds!=null) {
+	    	repository.removeBundleContext(cruds);
+	    	cruds.unregister();
+    	}
     }
 
     private static String urlToClassName(URL url) {

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -32,6 +33,7 @@ import org.wisdom.jcrom.dummy.Baby;
 import org.wisdom.jcrom.dummy.Daddy;
 import org.wisdom.test.parents.WisdomTest;
 
+@Ignore
 public class SaveAndReloadIT extends WisdomTest {
 
 	private static final String DADDY_PATH = "/daddies";

@@ -19,26 +19,26 @@
  */
 package org.wisdom.jcrom.runtime;
 
-import org.apache.felix.ipojo.annotations.*;
-import org.jcrom.Jcrom;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
+import javax.jcr.Session;
+
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Invalidate;
+import org.apache.felix.ipojo.annotations.Provides;
+import org.apache.felix.ipojo.annotations.Requires;
+import org.apache.felix.ipojo.annotations.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.JcromConfiguration;
-import org.wisdom.jcrom.object.JcrCrud;
-import org.wisdom.jcrom.service.JcromProvider;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
-import javax.jcr.Session;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by antoine on 14/07/2014.
@@ -55,19 +55,14 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     private JcromConfiguration jcromConfiguration;
 
     private Session session;
-
-    private Map<JcrCrud, ServiceRegistration> crudServiceRegistrations = new HashMap<>();
+    
+    private Set<JcromBundleContext> bundleContexts = new HashSet<>();
 
     @Requires
     ApplicationConfiguration applicationConfiguration;
 
     @Requires
     RepositoryFactory repositoryFactory;
-
-    @Requires(defaultimplementation = DefaultJcromProvider.class, optional = true, timeout = 1000)
-    JcromProvider jcromProvider;
-
-    private Jcrom jcrom;
 
     @Validate
     public void start() throws RepositoryException {
@@ -79,42 +74,14 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
                         .getConfiguration(jcromConfiguration.getRepository()).asMap());
         Thread.currentThread().setContextClassLoader(JcrRepository.class.getClassLoader());
         this.session = repository.login();
-        this.jcrom = jcromProvider.getJcrom(jcromConfiguration, this.session);
     }
 
     @Invalidate
     public void stop() {
     }
 
-    protected Crud addCrudService(Class entity, BundleContext bundleContext) throws RepositoryException {
-        jcrom.map(entity);
-        JcrCrudService<? extends Object> jcromCrudService;
-        jcromCrudService = new JcrCrudService(this, entity);
-        crudServiceRegistrations.put(jcromCrudService, registerCrud(bundleContext, jcromCrudService));
-        return jcromCrudService;
-    }
-
-    private ServiceRegistration registerCrud(BundleContext context, JcrCrudService crud) {
-        Dictionary prop = jcromConfiguration.toDictionary();
-        prop.put(Crud.ENTITY_CLASS_PROPERTY, crud.getEntityClass());
-        prop.put(Crud.ENTITY_CLASSNAME_PROPERTY, crud.getEntityClass().getName());
-        ServiceRegistration serviceRegistration = context.registerService(new String[]{Crud.class.getName(), JcrCrud.class.getName()}, crud, prop);
-        return serviceRegistration;
-    }
-
-    protected void removeCrudServices(Collection<Crud> cruds) {
-        for (Crud crud : cruds) {
-            crudServiceRegistrations.get(crud).unregister();
-            crudServiceRegistrations.remove(crud);
-        }
-    }
-
     public javax.jcr.Repository getRepository() {
         return repository;
-    }
-
-    public Jcrom getJcrom() {
-        return jcrom;
     }
 
     public Session getSession() {
@@ -123,7 +90,11 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     @Override
     public Collection<Crud<?, ?>> getCrudServices() {
-        return (Collection) crudServiceRegistrations.keySet();
+    	Collection<Crud<?,?>> returned = new HashSet<>();
+    	for(JcromBundleContext context : bundleContexts) {
+    		returned.addAll(context.getCruds());
+    	}
+    	return returned;
     }
 
 
@@ -150,4 +121,12 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     public JcromConfiguration getJcromConfiguration() {
         return jcromConfiguration;
     }
+
+	public boolean addBundleContext(JcromBundleContext context) {
+		return bundleContexts.add(context);
+	}
+
+	public boolean removeBundleContext(JcromBundleContext context) {
+		return bundleContexts.remove(context);
+	}
 }
