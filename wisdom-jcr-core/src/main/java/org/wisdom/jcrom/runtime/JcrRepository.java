@@ -19,26 +19,28 @@
  */
 package org.wisdom.jcrom.runtime;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
-import javax.jcr.Session;
-
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Invalidate;
-import org.apache.felix.ipojo.annotations.Provides;
-import org.apache.felix.ipojo.annotations.Requires;
-import org.apache.felix.ipojo.annotations.Validate;
+import org.apache.felix.ipojo.annotations.*;
+import org.jcrom.Jcrom;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.JcromConfiguration;
+import org.wisdom.jcrom.object.JcrCrud;
+import org.wisdom.jcrom.service.JcromProvider;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
+import javax.jcr.Session;
+
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by antoine on 14/07/2014.
@@ -55,14 +57,17 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     private JcromConfiguration jcromConfiguration;
 
     private Session session;
-    
-    private Set<JcromBundleContext> bundleContexts = new HashSet<>();
 
     @Requires
     ApplicationConfiguration applicationConfiguration;
 
     @Requires
     RepositoryFactory repositoryFactory;
+
+    @Requires(defaultimplementation = DefaultJcromProvider.class, optional = true, timeout = 1000)
+    JcromProvider jcromProvider;
+
+	private Collection<Crud<?, ?>> crudServices = new HashSet<>();
 
     @Validate
     public void start() throws RepositoryException {
@@ -90,11 +95,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     @Override
     public Collection<Crud<?, ?>> getCrudServices() {
-    	Collection<Crud<?,?>> returned = new HashSet<>();
-    	for(JcromBundleContext context : bundleContexts) {
-    		returned.addAll(context.getCruds());
-    	}
-    	return returned;
+        return crudServices ;
     }
 
 
@@ -122,11 +123,15 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
         return jcromConfiguration;
     }
 
-	public boolean addBundleContext(JcromBundleContext context) {
-		return bundleContexts.add(context);
+	public Jcrom createJcrom() {
+		return  jcromProvider.getJcrom(jcromConfiguration, this.session);
 	}
 
-	public boolean removeBundleContext(JcromBundleContext context) {
-		return bundleContexts.remove(context);
+	public boolean addCrudService(Crud<?, ?> arg0) {
+		return crudServices.add(arg0);
+	}
+
+	public boolean removeCrudService(Crud<?, ?> arg0) {
+		return crudServices.remove(arg0);
 	}
 }

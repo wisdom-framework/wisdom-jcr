@@ -19,6 +19,20 @@
  */
 package org.wisdom.jcrom.runtime;
 
+import static org.wisdom.jcrom.runtime.JcrQueryFactory.findAllQuery;
+import static org.wisdom.jcrom.runtime.JcrQueryFactory.findOneQuery;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+
 import org.jcrom.JcrMappingException;
 import org.jcrom.Jcrom;
 import org.jcrom.annotations.JcrNode;
@@ -33,20 +47,6 @@ import org.wisdom.api.model.Repository;
 import org.wisdom.api.model.TransactionManager;
 import org.wisdom.jcrom.object.JcrCrud;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import static org.wisdom.jcrom.runtime.JcrQueryFactory.findAllQuery;
-import static org.wisdom.jcrom.runtime.JcrQueryFactory.findOneQuery;
-
 /**
  * CRUD Service Implementation using Jcrom
  */
@@ -56,18 +56,18 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     protected final JcrRepository repository;
 
-    protected Class<T> entityClass;
+    protected final Class<T> entityClass;
 
     protected String nodeType;
 
-    protected AbstractJcrDAO<T> dao;
+    protected final AbstractJcrDAO<T> dao;
     
-    private Jcrom jcrom;
+    private final Jcrom jcrom;
 
-    protected JcrCrudService(JcrRepository repository, Class<T> entityClass, Jcrom jcrom) throws RepositoryException {
+    protected JcrCrudService(JcrRepository repository, Jcrom jcrom, Class<T> entityClass) throws RepositoryException {
         this.repository = repository;
-        this.entityClass = entityClass;
         this.jcrom = jcrom;
+        this.entityClass = entityClass;
         dao = new AbstractJcrDAO<T>(entityClass, repository.getSession(), jcrom) {
         };
         JcrNode jcrNode = ReflectionUtils.getJcrNodeAnnotation(entityClass);

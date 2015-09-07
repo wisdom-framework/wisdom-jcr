@@ -60,7 +60,7 @@ public class JcromBundleContext {
 	public void addCrudService(Class clazz, BundleContext bundleContext, JcrRepository repository) throws RepositoryException {
         jcrom.map(clazz);
         JcrCrudService<? extends Object> jcromCrudService;
-        jcromCrudService = new JcrCrudService(repository, clazz, jcrom);
+        jcromCrudService = new JcrCrudService<>(repository, jcrom, clazz);
         crudServiceRegistrations.put(jcromCrudService, registerCrud(bundleContext, jcromCrudService));
     }
 
