@@ -71,7 +71,7 @@ public class MultiPackageIT extends WisdomTest {
     public void multiPackage() {
         osgi.waitForService(Crud.class, null, 5000);
         final List<Crud> cruds = osgi.getServiceObjects(Crud.class);
-        Assert.assertEquals(2, cruds.size());
+        Assert.assertEquals(4, cruds.size());
     }
 
 }
