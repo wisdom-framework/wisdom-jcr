@@ -28,24 +28,24 @@ import org.wisdom.jcrom.service.JcromProvider;
 import javax.jcr.Session;
 
 /**
- * Default implementation of {@link org.wisdom.jcrom.service.JcromProvider} <br>
+ * Default implementation of {@link org.wisdom.jcrom.service.JcromProvider}
+ *<br>
  * Created at 06/05/2015 17:50.<br>
  *
  * @author Bastien
  *
  */
-public class DefaultJcromProvider implements JcromProvider {
-	/**
-	 * The famous {@link org.slf4j.Logger}
-	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(DefaultJcromProvider.class);
+public class FactoryJcromProvider implements JcromProvider {
+    /**
+     * The famous {@link org.slf4j.Logger}
+     */
+    private static final Logger logger = LoggerFactory.getLogger(FactoryJcromProvider.class);
 
-	public DefaultJcromProvider() {
-	}
+    public FactoryJcromProvider() {
+    }
 
-	@Override
-	public Jcrom getJcrom(JcromConfiguration jcromConfiguration, Session session) {
-		return new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
-	}
+    @Override
+    public Jcrom getJcrom(JcromConfiguration jcromConfiguration, Session session) {
+        return new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
+    }
 }
