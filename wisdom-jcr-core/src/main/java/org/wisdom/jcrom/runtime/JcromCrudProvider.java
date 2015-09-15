@@ -42,7 +42,7 @@ import java.util.List;
  */
 @Component(name = JcromCrudProvider.COMPONENT_NAME)
 @Instantiate(name = JcromCrudProvider.INSTANCE_NAME)
-public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
+public class JcromCrudProvider implements BundleTrackerCustomizer<BundleCrudComponent> {
 
     private Logger logger = LoggerFactory.getLogger(JcromCrudProvider.class);
 
@@ -56,7 +56,7 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
 
     private final BundleContext context;
 
-    private BundleTracker<List<Crud>> bundleTracker;
+    private BundleTracker<?> bundleTracker;
 
     @Requires
     private JcrRepository repository;
@@ -87,8 +87,8 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
     }
 
     @Override
-    public List<Crud> addingBundle(Bundle bundle, BundleEvent bundleEvent) {
-        List<Crud> cruds = new LinkedList<>();
+    public BundleCrudComponent addingBundle(Bundle bundle, BundleEvent bundleEvent) {
+        BundleCrudComponent cruds = new BundleCrudComponent(repository);
         if (jcromConfiguration != null) {
             for (String p : jcromConfiguration.getPackages()) {
                 Enumeration<URL> enums = bundle.findEntries(packageNameToPath(p), "*.class", true);
@@ -98,18 +98,7 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
                     //Load the entities from the bundle
                     do {
                         URL entry = enums.nextElement();
-                        try {
-                            logger.info("Enable mapping in jcrom for " + entry);
-                            String className = urlToClassName(entry);
-                            Class clazz = bundle.loadClass(className);
-                            cruds.add(repository.addCrudService(clazz, context));
-                        } catch (ClassNotFoundException e) {
-                            logger.debug(e.getMessage());
-                        } catch (RepositoryException e) {
-                            logger.debug(e.getMessage());
-                        } catch (NullPointerException e) {
-                            logger.debug(e.getMessage());
-                        }
+                    	cruds.addEntity(bundle, context, entry);
                     } while (enums.hasMoreElements());
                     logger.debug("Crud service has been added for " + p);
                 }
@@ -119,15 +108,15 @@ public class JcromCrudProvider implements BundleTrackerCustomizer<List<Crud>> {
     }
 
     @Override
-    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, List<Crud> cruds) {
+    public void modifiedBundle(Bundle bundle, BundleEvent bundleEvent, BundleCrudComponent cruds) {
     }
 
     @Override
-    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, List<Crud> cruds) {
-        repository.removeCrudServices(cruds);
+    public void removedBundle(Bundle bundle, BundleEvent bundleEvent, BundleCrudComponent cruds) {
+    	cruds.remove();
     }
 
-    private static String urlToClassName(URL url) {
+    public static String urlToClassName(URL url) {
         String path = url.getPath();
         return path.replace("/", ".").substring(1, path.lastIndexOf("."));
 
