@@ -1,0 +1,7 @@
+<test='http://www.wisdom-framework.org/jcr/test'>
+
+[test:hello] > nt:unstructured
+[test:world] > nt:unstructured
+[test:testentity] > nt:unstructured
+[test:baby] > nt:unstructured
+[test:daddy] > nt:unstructured
