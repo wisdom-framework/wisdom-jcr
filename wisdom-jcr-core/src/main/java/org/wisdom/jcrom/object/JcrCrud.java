@@ -55,4 +55,24 @@ public interface JcrCrud<T, I extends Serializable> extends Crud<T, I> {
      */
     public T findByPath(String absolutePath);
 
+    /**
+     * Load the node at the path of the given entity as an object of the given class.
+     *
+     * @param entity
+     * @param clazz
+     * @param <A>
+     * @return the node at the path of the given entity loaded as an object of the given class
+     */
+    public <A> A getAs(T entity, Class<A> clazz);
+
+    /**
+     * Load the node at the given path as an object of the given class.
+     *
+     * @param path
+     * @param clazz
+     * @param <A>
+     * @return the node at the given path loaded as an object of the given class
+     */
+    public <A> A getAs(String path, Class<A> clazz);
+
 }

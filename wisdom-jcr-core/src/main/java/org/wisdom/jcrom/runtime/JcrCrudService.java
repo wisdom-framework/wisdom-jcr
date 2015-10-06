@@ -19,25 +19,12 @@
  */
 package org.wisdom.jcrom.runtime;
 
-import static org.wisdom.jcrom.runtime.JcrQueryFactory.findAllQuery;
-import static org.wisdom.jcrom.runtime.JcrQueryFactory.findOneQuery;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-
 import org.jcrom.JcrMappingException;
 import org.jcrom.Jcrom;
 import org.jcrom.annotations.JcrNode;
 import org.jcrom.dao.AbstractJcrDAO;
 import org.jcrom.util.NodeFilter;
+import org.jcrom.util.PathUtils;
 import org.jcrom.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +33,19 @@ import org.wisdom.api.model.FluentTransaction;
 import org.wisdom.api.model.Repository;
 import org.wisdom.api.model.TransactionManager;
 import org.wisdom.jcrom.object.JcrCrud;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import static org.wisdom.jcrom.runtime.JcrQueryFactory.findAllQuery;
+import static org.wisdom.jcrom.runtime.JcrQueryFactory.findOneQuery;
 
 /**
  * CRUD Service Implementation using Jcrom
@@ -61,7 +61,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     protected String nodeType;
 
     protected final AbstractJcrDAO<T> dao;
-    
+
     private final Jcrom jcrom;
 
     protected JcrCrudService(JcrRepository repository, Jcrom jcrom, Class<T> entityClass) throws RepositoryException {
@@ -285,6 +285,20 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     @Override
     public T findByPath(String absolutePath) {
         return dao.get(absolutePath);
+    }
+
+    @Override
+    public <A> A getAs(T entity, Class<A> clazz) {
+        return getAs(jcrom.getPath(entity), clazz);
+    }
+
+    @Override
+    public <A> A getAs(String path, Class<A> clazz) {
+        try {
+            return jcrom.fromNode(clazz, PathUtils.getNode(path, repository.getSession()));
+        } catch (RepositoryException e) {
+            return null;
+        }
     }
 
     protected QueryResult executeQuery(String statement, String language) {
