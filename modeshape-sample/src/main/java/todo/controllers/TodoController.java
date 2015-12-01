@@ -21,15 +21,20 @@ package todo.controllers;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.wisdom.api.DefaultController;
 import org.wisdom.api.annotations.*;
 import org.wisdom.api.http.Result;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.HasBeenRollBackException;
+import org.wisdom.jcrom.runtime.JcrRepository;
+import org.wisdom.jcrom.runtime.JcrTools;
 import todo.models.Todo;
 import todo.models.TodoList;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.validation.Valid;
 import java.util.Iterator;
 import java.util.UUID;
@@ -45,6 +50,9 @@ public class TodoController extends DefaultController {
 
     @Model(Todo.class)
     private Crud<Todo, String> todoCrud;
+
+    @Requires
+    private JcrRepository jcrRepository;
 
 
     @Validate
@@ -65,6 +73,14 @@ public class TodoController extends DefaultController {
             list.setOwner("foo");
             listCrud.save(list);
 
+            try {
+                Node node = jcrRepository.getSession().getNode(todo.getPath());
+                JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 1");
+                JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 2");
+                JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 3");
+            } catch (RepositoryException e) {
+                logger().error(e.getMessage(), e);
+            }
 
             logger().info("Item added:");
             logger().info("todo : {} - {}", todo, todo.getId());

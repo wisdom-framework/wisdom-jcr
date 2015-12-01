@@ -3,50 +3,36 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.wisdom-framework.jcr</groupId>
         <artifactId>wisdom-jcr</artifactId>
+        <groupId>org.wisdom-framework.jcr</groupId>
         <version>0.3.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wisdom-jcr-core</artifactId>
+    <artifactId>wisdom-jcr-web-explorer</artifactId>
 
     <packaging>wisdom</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.wisdom-framework</groupId>
-            <artifactId>wisdom-api</artifactId>
+            <artifactId>wisdom-monitor</artifactId>
             <version>${wisdom.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-            <version>${ipojo.version}</version>
+            <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-jcr-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jcrom</groupId>
-            <artifactId>jcrom</artifactId>
-            <version>${jcrom.version}</version>
-        </dependency>
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>org.wisdom-framework</groupId>
-            <artifactId>wisdom-test</artifactId>
-            <version>${wisdom.version}</version>
-        </dependency>
-        <dependency>
-            <!-- slf4j binding used for tests -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jcl</artifactId>
-            <version>1.7.6</version>
-            <scope>test</scope>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr</artifactId>
+            <version>${modeshape.version}</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -84,5 +70,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -75,4 +75,12 @@ public class Todo {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 }
