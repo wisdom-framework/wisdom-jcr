@@ -19,41 +19,21 @@
  */
 package org.wisdom.jcrom.runtime;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import javax.jcr.Binary;
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeDefinition;
+import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.nodetype.NodeTypeTemplate;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /*
  * ModeShape (http://www.modeshape.org)
@@ -998,4 +978,37 @@ public class JcrTools {
         }
     }
 
+    /**
+     * Register new mixin type if does not exists on workspace
+     *
+     * @param session the JCR session
+     * @param mixin the mixin name to register
+     * @throws RepositoryException
+     */
+    public static void registerMixinType(Session session, String mixin) throws RepositoryException {
+        NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
+        if (!nodeTypeManager.hasNodeType(mixin)) {
+            NodeTypeTemplate nodeTypeTemplate = nodeTypeManager.createNodeTypeTemplate();
+            nodeTypeTemplate.setMixin(true);
+            nodeTypeTemplate.setName(mixin);
+
+            NodeTypeDefinition[] nodeTypes = new NodeTypeDefinition[]{nodeTypeTemplate};
+            nodeTypeManager.registerNodeTypes(nodeTypes, true);
+        }
+    }
+
+    /**
+     * Register new mixin type if does not exists on workspace the add it to the given node
+     *
+     * @param session the JCR session
+     * @param node the node where to add the mixin
+     * @param mixin the mixin name to add
+     * @throws RepositoryException
+     */
+    public static void registerAndAddMixinType(Session session, Node node, String mixin) throws RepositoryException {
+        registerMixinType(session, mixin);
+        if (!Arrays.asList(node.getMixinNodeTypes()).contains(mixin)) {
+            node.addMixin(mixin);
+        }
+    }
 }

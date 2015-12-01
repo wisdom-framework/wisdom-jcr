@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.wisdom-framework</groupId>
         <artifactId>wisdom-framework</artifactId>
-        <version>0.9.1</version>
+        <version>0.10.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.wisdom-framework.jcr</groupId>
@@ -23,8 +23,9 @@
     <modules>
         <module>wisdom-jcr-core</module>
         <module>wisdom-modeshape</module>
-        <module>modeshape-sample</module>
         <module>wisdom-modeshape-web-jcr-rest</module>
+        <module>wisdom-jcr-web-explorer</module>
+        <module>modeshape-sample</module>
         <module>jcr-test</module>
     </modules>
 
@@ -42,13 +43,12 @@
     </scm>
 
     <properties>
-        <wisdom.version>0.9.1</wisdom.version>
+        <wisdom.version>0.10.0-SNAPSHOT</wisdom.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <modeshape.version>4.2.0.Final</modeshape.version>
         <jcrom.version>2.1.0</jcrom.version>
         <jettison.version>1.3.1</jettison.version>
-        <wisdom.jcr.version>1.0-SNAPSHOT</wisdom.jcr.version>
     </properties>
     <dependencyManagement>
         <dependencies>

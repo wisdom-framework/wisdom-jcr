@@ -48,17 +48,22 @@
             <artifactId>wisdom-monitor</artifactId>
             <version>${wisdom.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-jcr-web-explorer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- wisdom-jcr -->
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
             <artifactId>wisdom-modeshape</artifactId>
-            <version>${wisdom.jcr.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
             <artifactId>wisdom-jcr-core</artifactId>
-            <version>${wisdom.jcr.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -70,7 +75,6 @@
             <artifactId>jcrom</artifactId>
             <version>${jcrom.version}</version>
         </dependency>
-        <!-- /wisdom-jcr -->
     </dependencies>
 
     <dependencyManagement>
