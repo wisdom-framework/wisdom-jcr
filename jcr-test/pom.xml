@@ -115,6 +115,7 @@
                             <include>org.modeshape:modeshape-common</include>
                             <include>joda-time:joda-time</include>
                             <include>org.jcrom:jcrom</include>
+                            <include>org.apache.tika:tika-core</include>
                         </includes>
                         <excludeFromApplication>true</excludeFromApplication>
                     </libraries>

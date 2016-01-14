@@ -74,6 +74,12 @@
             <groupId>org.jcrom</groupId>
             <artifactId>jcrom</artifactId>
             <version>${jcrom.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -100,11 +106,10 @@
                 <configuration>
                     <libraries>
                         <includes>
-                            <!-- wisdom-jcr -->
                             <include>org.modeshape:modeshape-jcr</include>
                             <include>joda-time:joda-time</include>
                             <include>org.jcrom:jcrom</include>
-                            <!-- /wisdom-jcr -->
+                            <include>org.apache.tika:tika-core</include>
                         </includes>
                         <excludeFromApplication>true</excludeFromApplication>
                     </libraries>
