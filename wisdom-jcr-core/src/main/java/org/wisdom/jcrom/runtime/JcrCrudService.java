@@ -302,12 +302,20 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     }
 
     protected QueryResult executeQuery(String statement, String language) {
+        // Since the current version of mapdb (1.0.8) is not OSGI ready some ClassNotFoundException can be thrown due to
+        // usage of Class.forName() in SerializerPojo (see http://njbartlett.name/2010/08/30/osgi-readiness-loading-classes.html)
+        // The subject has already been debate on mapdb forums and has been fixed in 2.0 (currently in beta). For now,
+        // simply avoid this problem by using a TTCL switch
+        final ClassLoader original = Thread.currentThread().getContextClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             javax.jcr.query.QueryManager queryManager = repository.getSession().getWorkspace().getQueryManager();
             Query query = queryManager.createQuery(statement, language);
             return query.execute();
         } catch (RepositoryException e) {
             throw new JcrMappingException("Could not find nodes by SQL", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
         }
     }
 
