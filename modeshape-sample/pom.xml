@@ -54,6 +54,13 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-jcr-script</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
         <!-- wisdom-jcr -->
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
@@ -110,6 +117,7 @@
                             <include>joda-time:joda-time</include>
                             <include>org.jcrom:jcrom</include>
                             <include>org.apache.tika:tika-core</include>
+                            <include>org.codehaus.groovy:groovy-all</include>
                         </includes>
                         <excludeFromApplication>true</excludeFromApplication>
                     </libraries>
