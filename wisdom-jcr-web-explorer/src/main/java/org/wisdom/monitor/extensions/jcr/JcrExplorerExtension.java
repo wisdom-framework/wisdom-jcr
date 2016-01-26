@@ -45,13 +45,19 @@ public class JcrExplorerExtension extends DefaultController implements MonitorEx
     @Requires
     JcrRepository jcrRepository;
 
-    @Route(method = HttpMethod.GET, uri = "{path*}")
-    public Result explorer(@Parameter("path") String path) throws Exception {
-        path = path.isEmpty() ? "/" : path;
-        Node node = jcrRepository.getSession().getNode(path);
+    @Route(method = HttpMethod.GET, uri = "/{workspace}/{path*}")
+    public Result explorer(@Parameter("path") String path,@Parameter("workspace") String workspace) throws Exception {
+        path = path.isEmpty() ? "/" : "/"+path;
+
+        Node node = null;
+        if (workspace!=null){
+            node = jcrRepository.getRepository().login(workspace).getNode(path);
+        } else {
+            node = jcrRepository.getSession().getNode(path);
+        }
 
         JcrExplorerModel jcrExplorerModel = JcrExplorerModel.build(node);
-        return ok(render(explorer, "nodeModel", jcrExplorerModel, "repository", jcrRepository));
+        return ok(render(explorer, "nodeModel", jcrExplorerModel, "repository", jcrRepository,"currentWorkspace",workspace,"workspaces",jcrRepository.getSession().getWorkspace().getAccessibleWorkspaceNames()));
     }
 
     @Override
@@ -61,7 +67,8 @@ public class JcrExplorerExtension extends DefaultController implements MonitorEx
 
     @Override
     public String url() {
-        return "/monitor/jcr/explorer";
+        String currentWorkspace = jcrRepository.getSession().getWorkspace().getName();
+        return "/monitor/jcr/explorer/"+currentWorkspace+"/";
     }
 
     @Override

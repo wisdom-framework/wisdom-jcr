@@ -48,6 +48,14 @@
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td>Workspace name</td>
+                                    <td th:text="${currentWorkspace}"></td>
+                                    <a th:each="workspace : ${workspaces}"
+                                       th:text="|${workspace}|"
+                                       th:href="@{~/monitor/jcr/explorer/{workspace}/(workspace=${workspace})}" class="label label-primary">
+                                    </a>
+                                </tr>
+                                <tr>
                                     <td>Repository name</td>
                                     <td th:text="${repository.getName()}"></td>
                                 </tr>
@@ -58,10 +66,10 @@
                                 <tr>
                                     <td>Node path</td>
                                     <td>
-                                        <a th:href="@{~/monitor/jcr/explorer/}">/</a>
+                                        <a th:href="@{~/monitor/jcr/explorer/{workspace}/(workspace=${currentWorkspace})}">/</a>
                                         <a th:each="nodeName : ${#strings.listSplit(nodeModel.getNode().getPath(),'/')}"
                                            th:text="|${nodeName} /|"
-                                           th:href="@{~/monitor/jcr/explorer{path}(path=|${#strings.substringBefore(nodeModel.getNode().getPath(),nodeName)}${nodeName}|)}">
+                                           th:href="@{~/monitor/jcr/explorer/{workspace}{path}(workspace=${currentWorkspace},path=|${#strings.substringBefore(nodeModel.getNode().getPath(),nodeName)}${nodeName}|)}">
                                         </a>
                                     </td>
                                 </tr>
@@ -90,7 +98,7 @@
                             <tbody>
                                 <tr th:each="node: ${nodeModel.subnodes}">
                                     <td>
-                                        <a th:text="${node.getName()}" th:href="@{~/monitor/jcr/explorer{path}(path=${node.getPath()})}">path</a>
+                                        <a th:text="${node.getName()}" th:href="@{~/monitor/jcr/explorer/{workspace}{path}(workspace=${currentWorkspace},path=${node.getPath()})}">path</a>
                                     </td>
                                 </tr>
                             </tbody>
