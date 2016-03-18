@@ -28,6 +28,7 @@
         <module>wisdom-jcr-script</module>
         <module>modeshape-sample</module>
         <module>jcr-test</module>
+        <module>wisdom-jcr-query</module>
     </modules>
 
     <licenses>
