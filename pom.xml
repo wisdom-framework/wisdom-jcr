@@ -26,8 +26,10 @@
         <module>wisdom-modeshape-web-jcr-rest</module>
         <module>wisdom-jcr-web-explorer</module>
         <module>wisdom-jcr-script</module>
+        <module>wisdom-modeshape-backup</module>
         <module>modeshape-sample</module>
         <module>jcr-test</module>
+
     </modules>
 
     <licenses>

@@ -28,32 +28,32 @@ import java.util.Date;
  */
 public class EventFormatter {
 
-    public String format (int eventCode){
-        if (eventCode== Event.NODE_ADDED){
+    public String format(int eventCode) {
+        if (eventCode == Event.NODE_ADDED) {
             return "Node added";
         }
-        if (eventCode==Event.NODE_MOVED){
+        if (eventCode == Event.NODE_MOVED) {
             return "Node moved";
         }
-        if (eventCode==Event.NODE_REMOVED){
+        if (eventCode == Event.NODE_REMOVED) {
             return "Node removed";
         }
-        if (eventCode==Event.PROPERTY_ADDED){
+        if (eventCode == Event.PROPERTY_ADDED) {
             return "Property added";
         }
-        if (eventCode==Event.PROPERTY_CHANGED){
+        if (eventCode == Event.PROPERTY_CHANGED) {
             return "Property changed";
         }
-        if (eventCode==Event.PROPERTY_REMOVED){
+        if (eventCode == Event.PROPERTY_REMOVED) {
             return "Property removed";
         }
-        if (eventCode==Event.PERSIST){
+        if (eventCode == Event.PERSIST) {
             return "Persist";
         }
-        return "Unknown event type ["+eventCode+"]";
+        return "Unknown event type [" + eventCode + "]";
     }
 
-    public String dateFormat(long timemillis){
+    public String dateFormat(long timemillis) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return dateFormat.format(new Date(timemillis));
     }

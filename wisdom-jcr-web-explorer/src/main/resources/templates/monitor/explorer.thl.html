@@ -19,109 +19,111 @@
   -->
 <!DOCTYPE html>
 <html layout:decorator="layout">
-    <head lang="en">
-        <title>JCR web explorer</title>
+<head lang="en">
+    <title>JCR web explorer</title>
 
-        <link rel="stylesheet" href="/assets/table.css"/>
-        <link href="/assets/dashboard.css" rel="stylesheet"/>
-        <style>
-            ul {
-                margin: 0px;
-            }
-        </style>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <!-- the actual content goes there -->
+    <link rel="stylesheet" href="/assets/table.css"/>
+    <link href="/assets/dashboard.css" rel="stylesheet"/>
+    <style>
+        ul {
+        margin: 0px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- the actual content goes there -->
 
-            <h1 class="page-header">Repository explorer</h1>
+    <h1 class="page-header">Repository explorer</h1>
 
-            <div class="container">
-                <div class="col-md-10">
-                    <div class="row">
-                        <table class="table table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th class="col-md-2"></th>
-                                    <th class="col-md-7"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Workspace name</td>
-                                    <td th:text="${currentWorkspace}"></td>
-                                    <a th:each="workspace : ${workspaces}"
-                                       th:text="|${workspace}|"
-                                       th:href="@{~/monitor/jcr/explorer/{workspace}/(workspace=${workspace})}" class="label label-primary">
-                                    </a>
-                                </tr>
-                                <tr>
-                                    <td>Repository name</td>
-                                    <td th:text="${repository.getName()}"></td>
-                                </tr>
-                                <tr>
-                                    <td>Node name</td>
-                                    <td th:text="${nodeModel.getNode().getName()}"></td>
-                                </tr>
-                                <tr>
-                                    <td>Node path</td>
-                                    <td>
-                                        <a th:href="@{~/monitor/jcr/explorer/{workspace}/(workspace=${currentWorkspace})}">/</a>
-                                        <a th:each="nodeName : ${#strings.listSplit(nodeModel.getNode().getPath(),'/')}"
-                                           th:text="|${nodeName} /|"
-                                           th:href="@{~/monitor/jcr/explorer/{workspace}{path}(workspace=${currentWorkspace},path=|${#strings.substringBefore(nodeModel.getNode().getPath(),nodeName)}${nodeName}|)}">
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Primary type</td>
-                                    <td th:text="${nodeModel.getNode().getPrimaryNodeType().getName()}">primary-type</td>
-                                </tr>
-                                <tr>
-                                    <td>Registered mixins</td>
-                                    <td>
-                                        <ul class="list-unstyled" th:each="mixin : ${nodeModel.mixins}">
-                                            <li th:text="${mixin}">Mixin name</li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+    <div class="container">
+        <div class="col-md-10">
+            <div class="row">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th class="col-md-2"></th>
+                        <th class="col-md-7"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Workspace name</td>
+                        <td th:text="${currentWorkspace}"></td>
+                        <a th:each="workspace : ${workspaces}"
+                           th:text="|${workspace}|"
+                           th:href="@{~/monitor/jcr/explorer/{workspace}/(workspace=${workspace})}"
+                           class="label label-primary">
+                        </a>
+                    </tr>
+                    <tr>
+                        <td>Repository name</td>
+                        <td th:text="${repository.getName()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Node name</td>
+                        <td th:text="${nodeModel.getNode().getName()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Node path</td>
+                        <td>
+                            <a th:href="@{~/monitor/jcr/explorer/{workspace}/(workspace=${currentWorkspace})}">/</a>
+                            <a th:each="nodeName : ${#strings.listSplit(nodeModel.getNode().getPath(),'/')}"
+                               th:text="|${nodeName} /|"
+                               th:href="@{~/monitor/jcr/explorer/{workspace}{path}(workspace=${currentWorkspace},path=|${#strings.substringBefore(nodeModel.getNode().getPath(),nodeName)}${nodeName}|)}">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Primary type</td>
+                        <td th:text="${nodeModel.getNode().getPrimaryNodeType().getName()}">primary-type</td>
+                    </tr>
+                    <tr>
+                        <td>Registered mixins</td>
+                        <td>
+                            <ul class="list-unstyled" th:each="mixin : ${nodeModel.mixins}">
+                                <li th:text="${mixin}">Mixin name</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                    <div class="row">
-                        <h2>Direct subnodes</h2>
-                        <table class="table table-striped table-condensed">
-                            <thead>
-                                <th>Name</th>
-                            </thead>
-                            <tbody>
-                                <tr th:each="node: ${nodeModel.subnodes}">
-                                    <td>
-                                        <a th:text="${node.getName()}" th:href="@{~/monitor/jcr/explorer/{workspace}{path}(workspace=${currentWorkspace},path=${node.getPath()})}">path</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="row">
+                <h2>Direct subnodes</h2>
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <th>Name</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="node: ${nodeModel.subnodes}">
+                        <td>
+                            <a th:text="${node.getName()}"
+                               th:href="@{~/monitor/jcr/explorer/{workspace}{path}(workspace=${currentWorkspace},path=${node.getPath()})}">path</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                    <div class="row">
-                        <h2>Properties</h2>
-                        <table class="table table-striped table-condensed">
-                            <thead>
-                                <th>Name</th>
-                                <th>Value</th>
-                            </thead>
-                            <tbody>
-                                <tr th:each="property : ${nodeModel.properties}">
-                                    <td th:text="${property.key}">name</td>
-                                    <td th:text="${property.value}">value</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="row">
+                <h2>Properties</h2>
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <th>Name</th>
+                    <th>Value</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="property : ${nodeModel.properties}">
+                        <td th:text="${property.key}">name</td>
+                        <td th:text="${property.value}">value</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </body>
+    </div>
+</div>
+</body>
 </html>

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wisdom-jcr-web-explorer</artifactId>
+    <artifactId>wisdom-modeshape-backup</artifactId>
 
     <packaging>wisdom</packaging>
 
@@ -29,10 +29,12 @@
             <artifactId>modeshape-jcr</artifactId>
             <version>${modeshape.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -60,38 +62,6 @@
                 <artifactId>wisdom-maven-plugin</artifactId>
                 <version>${wisdom.version}</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <libraries>
-                        <includes>
-                            <include>org.codehaus.groovy:groovy-all</include>
-                        </includes>
-                    </libraries>
-                    <excludeTransitive>true</excludeTransitive>
-                    <!-- We need test dependencies -->
-                    <deployTestDependencies>true</deployTestDependencies>
-                    <disableDistributionPackaging>true</disableDistributionPackaging>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.codehaus.groovy:groovy-all</include>
-
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

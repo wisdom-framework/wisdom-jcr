@@ -36,9 +36,13 @@
     <!-- the actual content goes there -->
     <h1 class="page-header">Repository script executor</h1>
     <div class="alert alert-warning alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <p>The purpose of script executor is to allow execution of jcr script (written in groovy) to migrate jcr data.</p>
-        <p>For safety, the script is tested on a cloned workspace, and executed jcr events are listed below. You can also have a look to the workspace using the <a href="https://github.com/wisdom-framework/wisdom-jcr">wisdom-jcr-web-explorer</a>.</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <p>The purpose of script executor is to allow execution of jcr script (written in groovy) to migrate jcr
+            data.</p>
+        <p>For safety, the script is tested on a cloned workspace, and executed jcr events are listed below. You can
+            also have a look to the workspace using the <a href="https://github.com/wisdom-framework/wisdom-jcr">wisdom-jcr-web-explorer</a>.
+        </p>
         <p>Once your script is validated, you can executed it on the repository original workspace.</p>
     </div>
     <div>
@@ -48,14 +52,22 @@
             <input type="hidden" th:value="${workspace}" id="workspace" name="workspace"/>
             <div th:if="${exception!=null}" class="alert alert-danger" style="margin: 10px 0 10px 0;">
                 <p th:text="${exception.getMessage()}"></p>
+                <p th:text="${stackTrace}"></p>
             </div>
             <div th:if="${info!=null}" class="alert alert-success" style="margin: 10px 0 10px 0;">
                 <p th:text="${info}"></p>
             </div>
             <div class="pull-right" style="margin: 10px 0 10px 0;">
+                <input type="checkbox" id="executeDirectly" name="executeDirectly"/> Execute directly (without simulate
+                the
+                changes). Take care! By checking this option, your changes could'nt be rollback!
                 <button th:if="${workspace.isEmpty()}" type="submit" class="btn btn-primary">Tester</button>
-                <button th:if="${workspace.isEmpty()}" type="submit" class="btn btn-danger" disabled="disabled">Executer</button>
-                <button th:if="${!workspace.isEmpty()}" type="submit" class="btn btn-success" disabled="disabled">Tester</button>
+                <button th:if="${workspace.isEmpty()}" type="submit" class="btn btn-danger" disabled="disabled">
+                    Executer
+                </button>
+                <button th:if="${!workspace.isEmpty()}" type="submit" class="btn btn-success" disabled="disabled">
+                    Tester
+                </button>
                 <button th:if="${!workspace.isEmpty()}" type="submit" class="btn btn-danger">Executer</button>
                 <a th:if="${!workspace.isEmpty()}" class="btn btn-default" th:href="@{~/monitor/jcr/script/abort}">Annuler</a>
             </div>
@@ -68,7 +80,13 @@
                     mode: "text/x-groovy"
                   });
                   editor.getDoc().setValue([[${script}]]);
-                </script>
+
+
+
+
+
+
+        </script>
     </div>
     <div th:if="${!events.isEmpty()}">
         <h2 class="sub-header">Affected nodes</h2>
