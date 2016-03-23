@@ -28,8 +28,8 @@
         <module>wisdom-jcr-script</module>
         <module>wisdom-modeshape-backup</module>
         <module>modeshape-sample</module>
+        <module>wisdom-jcr-query</module>
         <module>jcr-test</module>
-
     </modules>
 
     <licenses>

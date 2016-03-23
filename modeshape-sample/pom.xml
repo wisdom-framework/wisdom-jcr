@@ -48,24 +48,6 @@
             <artifactId>wisdom-monitor</artifactId>
             <version>${wisdom.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.wisdom-framework.jcr</groupId>
-            <artifactId>wisdom-jcr-web-explorer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wisdom-framework.jcr</groupId>
-            <artifactId>wisdom-jcr-script</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wisdom-framework.jcr</groupId>
-            <artifactId>wisdom-modeshape-backup</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
 
         <!-- wisdom-jcr -->
         <dependency>
@@ -94,6 +76,30 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- wisdom-jcr optional tools -->
+        <dependency>
+            <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-jcr-web-explorer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-jcr-script</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-modeshape-backup</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-jcr-query</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <dependencyManagement>
@@ -127,6 +133,7 @@
                         </includes>
                         <excludeFromApplication>true</excludeFromApplication>
                     </libraries>
+                    <disableDistributionPackaging>true</disableDistributionPackaging>
                 </configuration>
             </plugin>
 
@@ -167,7 +174,13 @@
                 </executions>
             </plugin>
 
-
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <!-- should not be deployed, it's a sample -->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
