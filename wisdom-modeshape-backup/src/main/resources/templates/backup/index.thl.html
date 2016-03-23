@@ -1,0 +1,43 @@
+<!--
+  #%L
+  Wisdom-Framework
+  %%
+  Copyright (C) 2013 - 2016 Wisdom Framework
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<!DOCTYPE html>
+<html layout:decorator="layout">
+<head lang="en">
+    <title>JCR Script Executor</title>
+    <link href="/assets/dashboard.css" rel="stylesheet"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- the actual content goes there -->
+    <h1 class="page-header">Modeshape backup^tool</h1>
+    <div>
+        <form action="/monitor/jcr/backup/create" method="POST" style="margin:10px;">
+            <button type="submit" class="btn btn-success">Perform backup</button>
+        </form>
+
+        <form action="/monitor/jcr/backup/restore" method="POST" style="margin:10px;" enctype="multipart/form-data">
+            <input type="file" name="upload"/>
+            <input type="submit" class="btn btn-danger" value="Restore backup"/>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

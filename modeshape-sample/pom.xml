@@ -90,9 +90,16 @@
         </dependency>
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
+            <artifactId>wisdom-modeshape-backup</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework.jcr</groupId>
             <artifactId>wisdom-jcr-query</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+
     </dependencies>
 
     <dependencyManagement>

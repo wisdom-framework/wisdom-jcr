@@ -46,18 +46,24 @@ public class JcrExplorerExtension extends DefaultController implements MonitorEx
     JcrRepository jcrRepository;
 
     @Route(method = HttpMethod.GET, uri = "/{workspace}/{path*}")
-    public Result explorer(@Parameter("path") String path,@Parameter("workspace") String workspace) throws Exception {
-        path = path.isEmpty() ? "/" : "/"+path;
+    public Result explorer(@Parameter("path") String path, @Parameter("workspace") String workspace) throws Exception {
+        path = path.isEmpty() ? "/" : "/" + path;
 
         Node node = null;
-        if (workspace!=null){
-            node = jcrRepository.getRepository().login(workspace).getNode(path);
+        if (workspace != null) {
+            final ClassLoader original = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+                node = jcrRepository.getRepository().login(workspace).getNode(path);
+            } finally {
+                Thread.currentThread().setContextClassLoader(original);
+            }
         } else {
             node = jcrRepository.getSession().getNode(path);
         }
 
         JcrExplorerModel jcrExplorerModel = JcrExplorerModel.build(node);
-        return ok(render(explorer, "nodeModel", jcrExplorerModel, "repository", jcrRepository,"currentWorkspace",workspace,"workspaces",jcrRepository.getSession().getWorkspace().getAccessibleWorkspaceNames()));
+        return ok(render(explorer, "nodeModel", jcrExplorerModel, "repository", jcrRepository, "currentWorkspace", workspace, "workspaces", jcrRepository.getSession().getWorkspace().getAccessibleWorkspaceNames()));
     }
 
     @Override
@@ -68,7 +74,7 @@ public class JcrExplorerExtension extends DefaultController implements MonitorEx
     @Override
     public String url() {
         String currentWorkspace = jcrRepository.getSession().getWorkspace().getName();
-        return "/monitor/jcr/explorer/"+currentWorkspace+"/";
+        return "/monitor/jcr/explorer/" + currentWorkspace + "/";
     }
 
     @Override
