@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -39,7 +40,6 @@ import org.wisdom.jcrom.runtime.JcrRepository;
 import org.wisdom.monitor.extensions.jcr.script.json.JcrEventDeserializer;
 import org.wisdom.monitor.extensions.jcr.script.json.JcrEventSerializer;
 import org.wisdom.monitor.extensions.jcr.script.util.EventFormatter;
-import org.wisdom.monitor.extensions.jcr.script.util.ExceptionUtils;
 import org.wisdom.monitor.service.MonitorExtension;
 
 import javax.jcr.Node;
@@ -202,7 +202,7 @@ public class JcrScriptExecutorExtension extends DefaultController implements Mon
             return ok(render(scriptTemplate, "workspace", "", "events", new ArrayList(), "script", "", "info", "Executed successfully!"));
         } catch (Exception e) {
             originalSession.getWorkspace().deleteWorkspace(workspace);
-            return internalServerError(render(scriptTemplate, "exception", e, "stackTrace", ExceptionUtils.getFullStackTrace(e), "workspace", workspace, "events", new ArrayList(), "script", script));
+            return internalServerError(render(scriptTemplate, "exception", e, "stackTrace", StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), "\n"), "workspace", workspace, "events", new ArrayList(), "script", script));
         } finally {
             Thread.currentThread().setContextClassLoader(original);
         }
