@@ -84,9 +84,15 @@ public class JcrQueryExtension extends DefaultController implements MonitorExten
     @Route(method = HttpMethod.POST, uri = "/execute")
     public Result execute(@FormParameter("query") String query, @FormParameter("language") String language) throws Exception {
         try {
-            Query createdQuery = jcrRepository.getSession().getWorkspace().getQueryManager().createQuery(query, language);
-            QueryResult result = createdQuery.execute();
-            return result(query, language, result, null);
+            final ClassLoader original = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+                Query createdQuery = jcrRepository.getSession().getWorkspace().getQueryManager().createQuery(query, language);
+                QueryResult result = createdQuery.execute();
+                return result(query, language, result, null);
+            } finally {
+                Thread.currentThread().setContextClassLoader(original);
+            }
         } catch (Exception e) {
             return result(query, language, null, e);
         }
