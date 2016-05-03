@@ -64,14 +64,12 @@
                         </thead>
                         <tbody>
                         <tr th:each="row : ${rows}">
-                            <td th:if="${#arrays.isEmpty(result.getSelectorNames())}"><a th:text="${row.getNode().getName()}"
-                                   th:href="@{~/monitor/jcr/explorer/default{path}/(path=${row.getPath()})}"></a></td>
-                             <td th:unless="${#arrays.isEmpty(result.getSelectorNames())}">
-                                 <a th:each="selector : ${result.getSelectorNames()}"
-                                    th:text="${row.getNode(selector).getName()}"
-                                    th:href="@{~/monitor/jcr/explorer/default{path}/(path=${row.getPath(selector)})}"></a>
-                             </td>
-                            <td th:each="column : ${result.getColumnNames()}" th:text="${row.getValue(column)}">Value
+                            <td>
+                                <a th:each="node : ${row.getNodes()}"
+                                   th:text="${node.getName()}"
+                                   th:href="@{~/monitor/jcr/explorer/default{path}/(path=${node.getPath()})}"></a>
+                            </td>
+                            <td th:each="value : ${row.getValues()}" th:text="${value}">Value
                             </td>
                         </tr>
                         </tbody>

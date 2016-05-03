@@ -29,10 +29,15 @@ import org.wisdom.api.templates.Template;
 import org.wisdom.jcrom.runtime.JcrRepository;
 import org.wisdom.monitor.service.MonitorExtension;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -43,6 +48,22 @@ import javax.jcr.query.Row;
 @Path("/monitor/jcr/query")
 @Authenticated("Monitor-Authenticator")
 public class JcrQueryExtension extends DefaultController implements MonitorExtension {
+
+    class RowValues {
+
+        Value[] values;
+
+        Node[] nodes;
+
+        public Value[] getValues() {
+            return values;
+        }
+
+        public Node[] getNodes() {
+            return nodes;
+        }
+
+    }
 
     @View("query/query")
     Template queryTemplate;
@@ -65,20 +86,36 @@ public class JcrQueryExtension extends DefaultController implements MonitorExten
     }
 
     private Result result(String query, String language, QueryResult result, Exception exception) throws RepositoryException {
+
+        List<RowValues> rows = null;
+        if (result != null) {
+            RowIterator rowIterator = result.getRows();
+            rows = new ArrayList((int) rowIterator.getSize());
+            while (rowIterator.hasNext()) {
+                Row row = (Row) rowIterator.next();
+                RowValues rowValues = new RowValues();
+                rowValues.values = row.getValues();
+                int selectorsSize = result.getSelectorNames().length;
+                if (selectorsSize > 0) {
+                    rowValues.nodes = new Node[selectorsSize];
+                    int i = 0;
+                    for (String selector : result.getSelectorNames()) {
+                        rowValues.nodes[i] = row.getNode(selector);
+                        i++;
+                    }
+                } else {
+                    rowValues.nodes = new Node[]{row.getNode()};
+                }
+                rows.add(rowValues);
+            }
+        }
         return ok(render(queryTemplate,
                 "query", query,
                 "language", language,
                 "languages", getLanguages(),
                 "result", result,
-                // row iterator needs to be wrapped in an iterable to be used in th:each directives
-                "rows", (Iterable<Row>) () -> {
-                    try {
-                        return result.getRows();
-                    } catch (RepositoryException e) {
-                        logger().error(e.getMessage(), e);
-                    }
-                    return null;
-                }, "exception", exception));
+                "rows", rows,
+                "exception", exception));
     }
 
     @Route(method = HttpMethod.POST, uri = "/execute")
