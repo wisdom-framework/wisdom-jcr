@@ -21,6 +21,7 @@
     <description>JCR support for Wisdom-Framework</description>
 
     <modules>
+        <module>wisdom-jcr-configuration</module>
         <module>wisdom-jcr-providers</module>
         <module>wisdom-jcr-core</module>
         <module>wisdom-modeshape</module>
@@ -31,8 +32,6 @@
         <module>modeshape-sample</module>
         <module>wisdom-jcr-query</module>
         <module>jcr-test</module>
-        <module>wisdom-jcr-configuration</module>
-
     </modules>
 
     <licenses>
