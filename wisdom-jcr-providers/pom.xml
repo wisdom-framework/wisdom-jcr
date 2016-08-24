@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.wisdom-framework.jcr</groupId>
         <artifactId>wisdom-jcr</artifactId>
+        <groupId>org.wisdom-framework.jcr</groupId>
         <version>0.3.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wisdom-jcr-core</artifactId>
+    <artifactId>wisdom-jcr-providers</artifactId>
 
     <packaging>wisdom</packaging>
 
@@ -55,13 +55,14 @@
 
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
-            <artifactId>wisdom-jcr-providers</artifactId>
+            <artifactId>wisdom-jcr-configuration</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -83,6 +84,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.wisdom-framework</groupId>
                 <artifactId>wisdom-maven-plugin</artifactId>

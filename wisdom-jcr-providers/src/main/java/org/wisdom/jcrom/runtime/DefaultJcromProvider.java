@@ -1,3 +1,4 @@
+package org.wisdom.jcrom.runtime;
 /*
  * #%L
  * Wisdom-Framework
@@ -17,8 +18,10 @@
  * limitations under the License.
  * #L%
  */
-package org.wisdom.jcrom.runtime;
 
+import org.apache.felix.ipojo.annotations.Component;
+import org.apache.felix.ipojo.annotations.Instantiate;
+import org.apache.felix.ipojo.annotations.Provides;
 import org.jcrom.Jcrom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,20 +35,22 @@ import javax.jcr.Session;
  * Created at 06/05/2015 17:50.<br>
  *
  * @author Bastien
- *
  */
+@Component
+@Provides(specifications = JcromProvider.class)
+@Instantiate
 public class DefaultJcromProvider implements JcromProvider {
-	/**
-	 * The famous {@link org.slf4j.Logger}
-	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(DefaultJcromProvider.class);
+    /**
+     * The famous {@link org.slf4j.Logger}
+     */
+    private static final Logger logger = LoggerFactory
+            .getLogger(DefaultJcromProvider.class);
 
-	public DefaultJcromProvider() {
-	}
+    public DefaultJcromProvider() {
+    }
 
-	@Override
-	public Jcrom getJcrom(JcromConfiguration jcromConfiguration, Session session) {
-		return new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
-	}
+    @Override
+    public Jcrom getJcrom(JcromConfiguration jcromConfiguration, Session session) {
+        return new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
+    }
 }

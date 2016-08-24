@@ -21,26 +21,19 @@ package org.wisdom.jcrom.runtime;
 
 import org.apache.felix.ipojo.annotations.*;
 import org.jcrom.Jcrom;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.JcromConfiguration;
-import org.wisdom.jcrom.object.JcrCrud;
 import org.wisdom.jcrom.service.JcromProvider;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
-
 import java.util.Collection;
-import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Created by antoine on 14/07/2014.
@@ -50,7 +43,7 @@ import java.util.Map;
 @Provides(specifications = JcrRepository.class)
 public class JcrRepository implements Repository<javax.jcr.Repository> {
 
-    private Logger logger = LoggerFactory.getLogger(JcromCrudProvider.class);
+    private Logger logger = LoggerFactory.getLogger(JcrRepository.class);
 
     private javax.jcr.Repository repository;
 
@@ -64,10 +57,10 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     @Requires
     RepositoryFactory repositoryFactory;
 
-    @Requires(defaultimplementation = DefaultJcromProvider.class, optional = true, timeout = 1000)
+    @Requires
     JcromProvider jcromProvider;
 
-	private Collection<Crud<?, ?>> crudServices = new HashSet<>();
+    private Collection<Crud<?, ?>> crudServices = new HashSet<>();
 
     @Validate
     public void start() throws RepositoryException {
@@ -95,7 +88,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     @Override
     public Collection<Crud<?, ?>> getCrudServices() {
-        return crudServices ;
+        return crudServices;
     }
 
 
@@ -123,15 +116,15 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
         return jcromConfiguration;
     }
 
-	public Jcrom createJcrom() {
-		return  jcromProvider.getJcrom(jcromConfiguration, this.session);
-	}
+    public Jcrom createJcrom() {
+        return jcromProvider.getJcrom(jcromConfiguration, this.session);
+    }
 
-	public boolean addCrudService(Crud<?, ?> arg0) {
-		return crudServices.add(arg0);
-	}
+    public boolean addCrudService(Crud<?, ?> arg0) {
+        return crudServices.add(arg0);
+    }
 
-	public boolean removeCrudService(Crud<?, ?> arg0) {
-		return crudServices.remove(arg0);
-	}
+    public boolean removeCrudService(Crud<?, ?> arg0) {
+        return crudServices.remove(arg0);
+    }
 }

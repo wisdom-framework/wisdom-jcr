@@ -26,11 +26,10 @@ import javax.jcr.Session;
 
 /**
  * Service for providing instance of Jcrom.
- *<br>
+ * <br>
  * Created at 06/05/2015 17:59.<br>
  *
  * @author Bastien
- *
  */
 
 public interface JcromProvider {
