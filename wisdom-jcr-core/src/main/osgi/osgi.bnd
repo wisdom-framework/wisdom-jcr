@@ -1,2 +1,3 @@
 Export-Package: org.wisdom.jcrom.*
+Import-Package: org.wisdom.jcrom.*,org.wisdom.api.*,javax.jcr.*,org.jcrom.*, org.slf4j.*,org.osgi.framework.*, org.osgi.util.*
 
