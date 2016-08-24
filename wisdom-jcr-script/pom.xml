@@ -76,6 +76,7 @@
                             <include>org.codehaus.groovy:groovy-all</include>
                         </includes>
                     </libraries>
+                    <disableDistributionPackaging>true</disableDistributionPackaging>
                 </configuration>
             </plugin>
         </plugins>

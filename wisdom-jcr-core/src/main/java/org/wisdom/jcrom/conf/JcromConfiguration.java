@@ -19,9 +19,6 @@
  */
 package org.wisdom.jcrom.conf;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Provides;
 import org.wisdom.api.configuration.ApplicationConfiguration;
 import org.wisdom.api.configuration.Configuration;
 
@@ -33,9 +30,6 @@ import java.util.stream.Collectors;
 /**
  * Created by antoine on 14/07/2014.
  */
-@Component
-@Provides(specifications = JcromConfiguration.class)
-@Instantiate
 public class JcromConfiguration {
 
     public static final String JCROM_PREFIX = "jcrom";

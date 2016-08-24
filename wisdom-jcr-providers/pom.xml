@@ -55,7 +55,7 @@
 
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
-            <artifactId>wisdom-jcr-configuration</artifactId>
+            <artifactId>wisdom-jcr-core</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

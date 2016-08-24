@@ -52,12 +52,6 @@
             <version>1.7.6</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.wisdom-framework.jcr</groupId>
-            <artifactId>wisdom-jcr-providers</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

@@ -1,2 +1,0 @@
-Export-Package: org.wisdom.jcrom.*
-Import-Package: org.wisdom.jcrom.*,org.wisdom.api.configuration.*
