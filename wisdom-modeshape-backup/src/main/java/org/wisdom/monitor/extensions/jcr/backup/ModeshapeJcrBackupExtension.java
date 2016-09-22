@@ -114,11 +114,13 @@ public class ModeshapeJcrBackupExtension extends DefaultController implements Mo
             ZipEntry ze = zis.getNextEntry();
 
             while (ze != null) {
+                if (ze.isDirectory()) {
+                    ze = zis.getNextEntry();
+                    continue;
+                }
 
                 String fileName = ze.getName();
                 File newFile = new File(folderToUnzipInto + File.separator + fileName);
-
-                System.out.println("file unzip : " + newFile.getAbsoluteFile());
 
                 //create all non exists folders
                 //else you will hit FileNotFoundException for compressed folder
