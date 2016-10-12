@@ -1,0 +1,227 @@
+<!--
+  #%L
+  Wisdom-Framework
+  %%
+  Copyright (C) 2013 - 2016 Wisdom Framework
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<!DOCTYPE html>
+<html layout:decorator="layout">
+<head lang="en">
+    <title>Modeshape monitoring</title>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Wisdom Framework Monitoring"/>
+    <meta name="author" content="The Wisdom Framework Team"/>
+    <link rel="shortcut icon" href="/assets/images/owl-small.png"/>
+
+    <script src="/libs/jquery.min.js"></script>
+    <script src="/libs/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/libs/css/bootstrap.css" media="screen"/>
+
+    <link rel="stylesheet" href="/assets/table.css"/>
+
+    <link href="/assets/dashboard.css" rel="stylesheet"/>
+
+    <style>
+        #filter {
+        border-radius: 5px;
+        }
+        .onTheLeft {
+        margin-left: 15px;
+        }
+
+        pre.arch {
+        font-size: small;
+        }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- the actual content goes there -->
+    <div class="row page-header">
+        <h1 class="col-md-6">Modeshape monitoring</h1>
+        <form action="/monitor/jcr/monitoring/parameters" method="POST" class="col-md-6" style="margin-top:25px;">
+            <select id="window" name="window" onchange="this.form.submit()">
+                <option th:each="availableWindow : ${availableWindows}"
+                        th:value="${availableWindow}" th:text="${#messages.msg(availableWindow)}"
+                        th:selected="${availableWindow == window}"></option>
+            </select>
+            <input name="durationMetric" th:value="${durationMetric}" type="hidden"/>
+            <input name="valueMetric" th:value="${valueMetric}" type="hidden"/>
+        </form>
+    </div>
+    <div class="row">
+        <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <p>The purpose of this tool is to provide a visibility of the modeshape statistics.</p>
+            <p>For more information, you can have a look to the <a
+                    href="https://docs.jboss.org/author/display/MODE50/Monitoring">Modeshape monitoring API
+                documentation</a>.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <h2 class="col-md-6">Value history</h2>
+            <form action="/monitor/jcr/monitoring/parameters" method="POST" class="col-md-6" style="margin-top:25px;">
+                <select id="valueMetric" name="valueMetric" onchange="this.form.submit()">
+                    <option th:each="availableValueMetric : ${availableValueMetrics}"
+                            th:value="${availableValueMetric}" th:text="${availableValueMetric.getLabel()}"
+                            th:selected="${availableValueMetric == valueMetric}"></option>
+                </select>
+                <input name="window" th:value="${window}" type="hidden"/>
+                <input name="durationMetric" th:value="${durationMetric}" type="hidden"/>
+            </form>
+        </div>
+        <hr/>
+        <div class="row col-md-12">
+            <div class="col-sm-2 placeholder">
+                <h4 id="instance-count" class="text-center"
+                    th:text="${#messages.msg(valueHistory.getWindow())}"></h4>
+
+                <p class="text-muted text-center">window</p>
+            </div>
+            <div class="col-sm-2 placeholder">
+                <h4 id="instance-valid-count" class="text-center"
+                    th:text="${valueHistory.getTotalDuration(timeUnit)}"></h4>
+
+                <p class="text-muted text-center">duration(seconds)</p>
+            </div>
+            <div class="col-sm-2 placeholder">
+                <h4 id="instance-invalid-count" class="text-center"
+                    th:text="${#dates.format(valueHistory.getStartTime().toDate(),'dd/MM/yyyy HH:mm:ss')}"></h4>
+
+                <p class="text-muted text-center">start time</p>
+            </div>
+            <div class="col-sm-2 placeholder">
+                <h4 id="instance-stopped-count" class="text-center"
+                    th:text="${#dates.format(valueHistory.getEndTime().toDate(),'dd/MM/yyyy HH:mm:ss')}"></h4>
+
+                <p class="text-muted text-center">end time</p>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <table class="table table-striped table-condensed">
+                <thead>
+                <th>Count</th>
+                <th>Minimum</th>
+                <th>Average</th>
+                <th>Maximum</th>
+                <th>Variance</th>
+                <th>Standard deviation</th>
+                </thead>
+                <tbody>
+                <tr th:each="durationStat : ${valueHistory.getStats()}"
+                    th:if="${durationStat} != null">
+                    <td th:text="${durationStat.getCount()}"></td>
+                    <td th:text="${durationStat.getMinimum()}"></td>
+                    <td th:text="${durationStat.getMean()}"></td>
+                    <td th:text="${durationStat.getMaximum()}"></td>
+                    <td th:text="${durationStat.getVariance()}"></td>
+                    <td th:text="${durationStat.getStandardDeviation()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="row">
+            <h2 class="col-md-6">Duration history</h2>
+            <form action="/monitor/jcr/monitoring/parameters" method="POST" class="col-md-6" style="margin-top:25px;">
+                <select id="durationMetric" name="durationMetric" onchange="this.form.submit()">
+                    <option th:each="availableDurationMetric : ${availableDurationMetrics}"
+                            th:value="${availableDurationMetric}" th:text="${availableDurationMetric.getLabel()}"
+                            th:selected="${availableDurationMetric == durationMetric}"></option>
+                </select>
+                <input name="window" th:value="${window}" type="hidden"/>
+                <input name="valueMetric" th:value="${valueMetric}" type="hidden"/>
+            </form>
+        </div>
+        <div class="row col-md-12">
+            <h3>Statistics</h3>
+            <div class="col-sm-2 placeholder">
+                <h4 class="text-center" th:text="${#messages.msg(durationHistory.getWindow())}"></h4>
+
+                <p class="text-muted text-center">window</p>
+            </div>
+            <div class="col-sm-2 placeholder">
+                <h4 class="text-center"
+                    th:text="${durationHistory.getTotalDuration(timeUnit)}"></h4>
+
+                <p class="text-muted text-center">duration(seconds)</p>
+            </div>
+            <div class="col-sm-2 placeholder">
+                <h4 class="text-center"
+                    th:text="${#dates.format(durationHistory.getStartTime().toDate(),'dd/MM/yyyy HH:mm:ss')}"></h4>
+
+                <p class="text-muted text-center">start time</p>
+            </div>
+            <div class="col-sm-2 placeholder">
+                <h4 class="text-center"
+                    th:text="${#dates.format(durationHistory.getEndTime().toDate(),'dd/MM/yyyy HH:mm:ss')}"></h4>
+
+                <p class="text-muted text-center">end time</p>
+            </div>
+            <div class="row col-md-12">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <th>Count</th>
+                    <th>Minimum</th>
+                    <th>Average</th>
+                    <th>Maximum</th>
+                    <th>Variance</th>
+                    <th>Standard deviation</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="durationStat : ${durationHistory.getStats()}"
+                        th:if="${durationStat} != null">
+                        <td th:text="${durationStat.getCount()}"></td>
+                        <td th:text="${durationStat.getMinimum()}"></td>
+                        <td th:text="${durationStat.getMean()}"></td>
+                        <td th:text="${durationStat.getMaximum()}"></td>
+                        <td th:text="${durationStat.getVariance()}"></td>
+                        <td th:text="${durationStat.getStandardDeviation()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row col-md-12">
+            <h3>Longest running</h3>
+            <table class="table table-striped table-condensed">
+                <thead>
+                <th>Duration</th>
+                <th>Query</th>
+                </thead>
+                <tbody>
+                <tr th:each="queryActivity : ${longestRunning}">
+                    <td th:text="${queryActivity.getDuration(timeUnit)}"></td>
+                    <td th:text="${queryActivity.getPayload().get(query)}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -31,6 +31,8 @@
         <module>modeshape-sample</module>
         <module>wisdom-jcr-query</module>
         <module>jcr-test</module>
+        <module>wisdom-modeshape-monitoring</module>
+
     </modules>
 
     <licenses>
