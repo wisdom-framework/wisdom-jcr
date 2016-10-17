@@ -32,7 +32,7 @@
     <script src="/assets/libs/codemirror/groovy.js"></script>
 </head>
 <body>
-<div layout:fragment="content">//
+<div layout:fragment="content">
     <!-- the actual content goes there -->
     <h1 class="page-header">Repository script executor</h1>
     <div class="alert alert-warning alert-dismissible">
@@ -40,6 +40,7 @@
                 aria-hidden="true">&times;</span></button>
         <p>The purpose of script executor is to allow execution of jcr script (written in groovy) to migrate jcr
             data.</p>
+        <p>Exemple: session.getNode("/").setProperty("myProp","value");</p>
         <p>For safety, the script is tested on a cloned workspace, and executed jcr events are listed below. You can
             also have a look to the workspace using the <a
                     href="https://github.com/wisdom-framework/wisdom-jcr">wisdom-jcr-web-explorer</a>.
@@ -82,6 +83,8 @@
                     mode: "text/x-groovy"
                   });
                   editor.getDoc().setValue([[${script}]]);
+
+
 
 
 

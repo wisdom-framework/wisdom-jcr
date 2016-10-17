@@ -20,9 +20,9 @@
 package org.wisdom.jcr.modeshape.service;
 
 import org.apache.felix.ipojo.annotations.*;
-import org.infinispan.schematic.document.ParsingException;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
+import org.modeshape.schematic.document.ParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;

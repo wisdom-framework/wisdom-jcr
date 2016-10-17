@@ -1,11 +1,15 @@
 {
   "name": "sample-repository-prod",
-  "node-types": ["conf/sample.cnd"],
+  "node-types": [
+    "conf/sample.cnd"
+  ],
   "storage": {
-    "cacheConfiguration": "conf/infinispan-prod.xml",
-    "cacheName": "persisted_repository"
+    "persistence": {
+      "type": "file",
+      "path": "persistent_repository"
+    }
   },
-  "journaling" : {
-    "location" : "journal"
+  "journaling": {
+    "location": "journal"
   }
 }

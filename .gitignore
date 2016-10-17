@@ -41,3 +41,10 @@ velocity.log
 log/*
 log/**
 log
+
+chameleon.bat
+chameleon.sh
+bin/**
+conf/**
+core/**
+runtime/**

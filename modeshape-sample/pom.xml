@@ -104,8 +104,11 @@
             <artifactId>wisdom-jcr-query</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.192</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -132,6 +135,7 @@
                     <libraries>
                         <includes>
                             <include>org.modeshape:modeshape-jcr</include>
+                            <include>com.h2database:h2</include>
                             <include>joda-time:joda-time</include>
                             <include>org.jcrom:jcrom</include>
                             <include>org.apache.tika:tika-core</include>

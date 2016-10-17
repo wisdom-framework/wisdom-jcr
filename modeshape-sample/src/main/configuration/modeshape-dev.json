@@ -1,7 +1,14 @@
 {
   "name": "sample-repository-dev",
-  "node-types": ["conf/sample.cnd"],
-  "journaling" : {
-    "location" : "journal"
+  "node-types": [
+    "conf/sample.cnd"
+  ],
+  "storage": {
+    "persistence": {
+      "type": "mem"
+    }
+  },
+  "journaling": {
+    "location": "journal"
   }
 }
