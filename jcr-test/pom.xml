@@ -5,7 +5,7 @@
     <parent>
         <artifactId>wisdom-jcr</artifactId>
         <groupId>org.wisdom-framework.jcr</groupId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -58,17 +58,17 @@
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
             <artifactId>wisdom-modeshape</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
             <artifactId>wisdom-jcr-core</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
             <artifactId>wisdom-jcr-providers</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.0</version>
         </dependency>
         <!--dependency>
             <groupId>org.wisdom-framework</groupId>
