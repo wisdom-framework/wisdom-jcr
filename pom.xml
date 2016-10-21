@@ -31,6 +31,8 @@
         <module>modeshape-sample</module>
         <module>wisdom-jcr-query</module>
         <module>jcr-test</module>
+        <module>wisdom-modeshape-monitoring</module>
+
     </modules>
 
     <licenses>
@@ -47,7 +49,7 @@
     </scm>
 
     <properties>
-        <wisdom.version>0.10.0-SNAPSHOT</wisdom.version>
+        <wisdom.version>0.9.1</wisdom.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <modeshape.version>4.5.0.Final</modeshape.version>
@@ -58,6 +60,24 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-test</artifactId>
+                <version>${wisdom.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-api</artifactId>
+                <version>${wisdom.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wisdom-framework</groupId>
+                <artifactId>wisdom-monitor</artifactId>
+                <version>${wisdom.version}</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>org.codehaus.jettison</groupId>
                 <artifactId>jettison</artifactId>

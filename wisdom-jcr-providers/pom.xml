@@ -17,7 +17,6 @@
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-api</artifactId>
-            <version>${wisdom.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -43,7 +42,6 @@
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-test</artifactId>
-            <version>${wisdom.version}</version>
         </dependency>
         <dependency>
             <!-- slf4j binding used for tests -->

@@ -20,6 +20,13 @@
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-monitor</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -41,12 +48,6 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>2.1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wisdom-framework</groupId>
-            <artifactId>wisdom-monitor</artifactId>
-            <version>${wisdom.version}</version>
         </dependency>
 
         <!-- wisdom-jcr -->
