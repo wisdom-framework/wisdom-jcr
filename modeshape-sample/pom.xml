@@ -20,14 +20,12 @@
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-api</artifactId>
-            <version>0.9.1</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-monitor</artifactId>
-            <version>0.9.1</version>
             <scope>compile</scope>
         </dependency>
 
