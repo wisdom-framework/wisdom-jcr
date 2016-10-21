@@ -83,7 +83,6 @@
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-monitor</artifactId>
-            <version>${wisdom.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.tinybundles</groupId>

@@ -20,6 +20,7 @@
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-api</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -46,7 +47,7 @@
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-monitor</artifactId>
-            <version>${wisdom.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- wisdom-jcr -->

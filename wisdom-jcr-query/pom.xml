@@ -16,8 +16,11 @@
     <dependencies>
         <dependency>
             <groupId>org.wisdom-framework</groupId>
+            <artifactId>wisdom-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-monitor</artifactId>
-            <version>${wisdom.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wisdom-framework.jcr</groupId>
