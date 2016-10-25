@@ -1,4 +1,6 @@
 {
-  "name": "cloud-repository-test",
-  "node-types": ["conf/cnd/test.cnd"]
+  "name": "jcr-test-repository",
+  "node-types": [
+    "conf/cnd/test.cnd"
+  ]
 }

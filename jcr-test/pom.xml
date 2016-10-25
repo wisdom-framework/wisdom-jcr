@@ -89,6 +89,11 @@
             <artifactId>tinybundles</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.192</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -117,6 +122,7 @@
                             <include>org.modeshape:modeshape-jcr</include>
                             <include>org.modeshape:modeshape-jcr-api</include>
                             <include>org.modeshape:modeshape-common</include>
+                            <include>com.h2database:h2</include>
                             <include>joda-time:joda-time</include>
                             <include>org.jcrom:jcrom</include>
                             <include>org.apache.tika:tika-core</include>
