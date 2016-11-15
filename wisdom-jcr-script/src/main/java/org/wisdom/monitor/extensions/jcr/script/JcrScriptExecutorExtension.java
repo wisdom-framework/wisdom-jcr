@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.DefaultController;
 import org.wisdom.api.annotations.*;
+import org.wisdom.api.annotations.scheduler.Async;
 import org.wisdom.api.http.HttpMethod;
 import org.wisdom.api.http.Result;
 import org.wisdom.api.security.Authenticated;
@@ -81,7 +82,8 @@ public class JcrScriptExecutorExtension extends DefaultController implements Mon
     @Route(method = HttpMethod.GET, uri = "")
     public Result index() throws Exception {
         Session session = jcrRepository.getSession();
-        Optional<String> currentMigrationWorkspaceOptional = Arrays.asList(session.getWorkspace().getAccessibleWorkspaceNames()).stream().filter(name -> name.startsWith(JCR_MIGRATION_PREFIX)).findFirst();
+        Optional<String> currentMigrationWorkspaceOptional = Arrays.asList(session.getWorkspace().getAccessibleWorkspaceNames()).stream().filter(name -> name.startsWith(JCR_MIGRATION_PREFIX))
+                                                                   .findFirst();
         String workspace = "";
         String script = "";
         List<Event> events = new ArrayList<>();
@@ -101,6 +103,7 @@ public class JcrScriptExecutorExtension extends DefaultController implements Mon
         return ok(render(scriptTemplate, "script", script, "workspace", workspace, "events", events, "eventFormatter", EVENT_FORMATTER));
     }
 
+    @Async
     @Route(method = HttpMethod.POST, uri = "/execute")
     public Result execute(@FormParameter("script") String script, @FormParameter("workspace") String workspace, @FormParameter("executeDirectly") boolean executeDirectly) throws Exception {
         if (workspace == null || workspace.isEmpty()) {
@@ -170,13 +173,15 @@ public class JcrScriptExecutorExtension extends DefaultController implements Mon
         }
     }
 
+    @Async
     @Route(method = HttpMethod.GET, uri = "/abort")
     public Result abort() throws Exception {
         final ClassLoader original = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             Session session = jcrRepository.getSession();
-            Optional<String> currentMigrationWorkspaceOptional = Arrays.asList(session.getWorkspace().getAccessibleWorkspaceNames()).stream().filter(name -> name.startsWith(JCR_MIGRATION_PREFIX)).findFirst();
+            Optional<String> currentMigrationWorkspaceOptional = Arrays.asList(session.getWorkspace().getAccessibleWorkspaceNames()).stream().filter(name -> name.startsWith(JCR_MIGRATION_PREFIX))
+                                                                       .findFirst();
             String workspace = "";
             if (currentMigrationWorkspaceOptional.isPresent()) {
                 workspace = currentMigrationWorkspaceOptional.get();
@@ -202,7 +207,9 @@ public class JcrScriptExecutorExtension extends DefaultController implements Mon
             return ok(render(scriptTemplate, "workspace", "", "events", new ArrayList(), "script", "", "info", "Executed successfully!"));
         } catch (Exception e) {
             originalSession.getWorkspace().deleteWorkspace(workspace);
-            return internalServerError(render(scriptTemplate, "exception", e, "stackTrace", StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), "\n"), "workspace", workspace, "events", new ArrayList(), "script", script));
+            return internalServerError(
+                    render(scriptTemplate, "exception", e, "stackTrace", StringUtils.join(ExceptionUtils.getRootCauseStackTrace(e), "\n"), "workspace", workspace, "events", new ArrayList(), "script",
+                           script));
         } finally {
             Thread.currentThread().setContextClassLoader(original);
         }
