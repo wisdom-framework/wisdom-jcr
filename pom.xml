@@ -32,7 +32,7 @@
         <module>wisdom-jcr-query</module>
         <module>jcr-test</module>
         <module>wisdom-modeshape-monitoring</module>
-
+        <module>wisdom-modeshape-index</module>
     </modules>
 
     <licenses>
