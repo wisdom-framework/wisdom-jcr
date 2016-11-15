@@ -22,6 +22,7 @@ package org.wisdom.monitor.extensions.jcr.query;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.wisdom.api.DefaultController;
 import org.wisdom.api.annotations.*;
+import org.wisdom.api.annotations.scheduler.Async;
 import org.wisdom.api.http.HttpMethod;
 import org.wisdom.api.http.Result;
 import org.wisdom.api.security.Authenticated;
@@ -104,20 +105,21 @@ public class JcrQueryExtension extends DefaultController implements MonitorExten
                         i++;
                     }
                 } else {
-                    rowValues.nodes = new Node[]{row.getNode()};
+                    rowValues.nodes = new Node[] { row.getNode() };
                 }
                 rows.add(rowValues);
             }
         }
         return ok(render(queryTemplate,
-                "query", query,
-                "language", language,
-                "languages", getLanguages(),
-                "result", result,
-                "rows", rows,
-                "exception", exception));
+                         "query", query,
+                         "language", language,
+                         "languages", getLanguages(),
+                         "result", result,
+                         "rows", rows,
+                         "exception", exception));
     }
 
+    @Async
     @Route(method = HttpMethod.POST, uri = "/execute")
     public Result execute(@FormParameter("query") String query, @FormParameter("language") String language) throws Exception {
         try {
