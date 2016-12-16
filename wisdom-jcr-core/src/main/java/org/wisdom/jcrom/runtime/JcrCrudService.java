@@ -75,7 +75,8 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
             nodeType = jcrNode.nodeType();
         }
         if (nodeType == null) {
-            throw new JcrMappingException("Can not use JcrCrudService on a class with no node type, please annotate the class " + entityClass + " with the JcrNode annotations and specify its nodeType");
+            throw new JcrMappingException(
+                    "Can not use JcrCrudService on a class with no node type, please annotate the class " + entityClass + " with the JcrNode annotations and specify its nodeType");
         }
     }
 
@@ -120,8 +121,12 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         }
         String name = jcrom.getName(t);
         if (path != null) {
-            if (exists(name)) {
-                return dao.update(t);
+            try {
+                if (repository.getSession().nodeExists(path + "/" + name)) {
+                    return dao.update(t);
+                }
+            } catch (RepositoryException e) {
+                throw new JcrMappingException("Unable to save the entity " + path, e);
             }
         }
         return dao.create(t);
@@ -334,4 +339,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         return executeQuery(statement, Query.JCR_SQL2);
     }
 
+    public String getNodeType() {
+        return nodeType;
+    }
 }

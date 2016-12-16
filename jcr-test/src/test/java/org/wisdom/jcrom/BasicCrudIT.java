@@ -76,5 +76,32 @@ public class BasicCrudIT extends WisdomTest {
         Assert.assertNotNull(hello1);
     }
 
+    /**
+     * https://github.com/wisdom-framework/wisdom-jcr/issues/34
+     */
+    @Test
+    public void issue34() {
+        JcrCrud<Hello, String> helloCrud = (JcrCrud<Hello, String>) osGiUtils.getCrud(Hello.class);
+        Assert.assertNotNull(helloCrud);
+        Hello hello = new Hello();
+        hello.setPath("/entities/todo");
+        hello.setName("a");
+        helloCrud.save(hello);
+
+        Assert.assertNotNull(helloCrud.findByPath("/entities/todo/a"));
+        Assert.assertNotNull(helloCrud.findOne("a"));
+        Assert.assertNull(helloCrud.findByPath("/a"));
+        Assert.assertNull(helloCrud.findByPath("/entities/a"));
+
+        Hello hello2 = new Hello();
+        hello2.setPath("/entities");
+        hello2.setName("a");
+        helloCrud.save(hello2);
+
+        Assert.assertNotNull(helloCrud.findByPath("/entities/todo/a"));
+        Assert.assertNotNull(helloCrud.findOne("a"));
+        Assert.assertNotNull(helloCrud.findByPath("/entities/a"));
+        Assert.assertNull(helloCrud.findByPath("/a"));
+    }
 
 }
