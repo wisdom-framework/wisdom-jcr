@@ -122,7 +122,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         String name = jcrom.getName(t);
         if (path != null) {
             try {
-                if (repository.getSession().nodeExists(path + "/" + name)) {
+                if (repository.getSession().nodeExists(path.endsWith("/" + name) ? path : path + "/" + name)) {
                     return dao.update(t);
                 }
             } catch (RepositoryException e) {
