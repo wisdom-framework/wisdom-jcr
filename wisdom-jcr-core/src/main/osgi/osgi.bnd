@@ -1,2 +1,2 @@
 Export-Package: org.wisdom.jcrom.*
-
+DynamicImport-Package: *
