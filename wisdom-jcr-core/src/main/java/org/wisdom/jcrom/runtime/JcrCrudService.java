@@ -122,8 +122,12 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         String name = jcrom.getName(t);
         if (path != null) {
             try {
-                if (repository.getSession().nodeExists(path.endsWith("/" + name) ? path : path + "/" + name)) {
+                if (path.endsWith("/" + name) && repository.getSession().nodeExists(path)) {
                     return dao.update(t);
+                } else {
+                    if (repository.getSession().nodeExists(path.endsWith("/") ? path + name : path + "/" + name)) {
+                        throw new JcrMappingException("Unable to save entity. You're trying to update an existing entity with the wrong path [path=" + path + ",name=" + name + "]");
+                    }
                 }
             } catch (RepositoryException e) {
                 throw new JcrMappingException("Unable to save the entity " + path, e);

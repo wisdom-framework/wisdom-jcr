@@ -86,6 +86,7 @@ public class BasicCrudIT extends WisdomTest {
         Hello hello = new Hello();
         hello.setPath("/entities/todo");
         hello.setName("a");
+        hello.setValue("value1");
         helloCrud.save(hello);
 
         Assert.assertNotNull(helloCrud.findByPath("/entities/todo/a"));
@@ -102,6 +103,16 @@ public class BasicCrudIT extends WisdomTest {
         Assert.assertNotNull(helloCrud.findOne("a"));
         Assert.assertNotNull(helloCrud.findByPath("/entities/a"));
         Assert.assertNull(helloCrud.findByPath("/a"));
+
+        Hello helloB = new Hello();
+        helloB.setPath("/entities/todo/");
+        helloB.setName("b");
+        helloB.setValue("value2");
+        helloCrud.save(helloB);
+
+        helloB = helloCrud.findByPath("/entities/todo/b");
+        Assert.assertNotNull(helloB);
+        Assert.assertEquals("value2", helloB.getValue());
     }
 
 }
