@@ -21,16 +21,16 @@ package org.wisdom.jcrom.entity1;
 
 import org.jcrom.AbstractJcrEntity;
 import org.jcrom.annotations.JcrNode;
+import org.jcrom.annotations.JcrProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * TODO write documentation<br>
- *<br>
+ * <br>
  * Created at 25/03/2015 10:55.<br>
  *
  * @author Bastien
- *
  */
 @JcrNode(nodeType = "test:hello")
 public class Hello extends AbstractJcrEntity {
@@ -39,4 +39,14 @@ public class Hello extends AbstractJcrEntity {
      */
     private static final Logger logger = LoggerFactory.getLogger(Hello.class);
 
+    @JcrProperty
+    String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }
