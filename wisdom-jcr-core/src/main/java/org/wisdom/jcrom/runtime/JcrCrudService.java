@@ -111,14 +111,24 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         return deleted;
     }
 
+    /**
+     * Save the given entity. This method can perform both a create or an update action.
+     * If the given entity has its name at the end of its path, we consider that the entity should be stored to this path.
+     * If no, it means that the path is the parent path.
+     * Ie: Entity named myEntity with path /entities/myEntity will be stored at /entities/myEntity. We mean by store, both created or updated
+     * <p>
+     * For backward compatibility, the entity can have only the parent path, in this case, we perform a creation only if the entity doesn't exist.
+     * The entity's path returned after the save will be the full path (parent path + entity name).
+     * Ie: Entity named myEntity with path /entities will be stored at /entities/myEntity only if no entity exist at this path, else an exception will be thrown.
+     * <p>
+     * So calling save with:
+     * 1. Entity named myEntity with path /entities will be stored at /entities/myEntity (creation)
+     * 2. Then calling save with myEntity with path /entities/myEntity (update) will update the entity
+     * 3. Then calling save with myEntity with path /entities will throw an exception when entity already exist
+     */
     @Override
     public T save(T t) {
         String path = jcrom.getPath(t);
-        try {
-            checkPath(path);
-        } catch (RepositoryException e) {
-            throw new JcrMappingException("Unable to create the parent path " + path, e);
-        }
         String name = jcrom.getName(t);
         if (path != null) {
             try {
@@ -133,7 +143,13 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
                 throw new JcrMappingException("Unable to save the entity " + path, e);
             }
         }
-        return dao.create(t);
+        try {
+            String parentPath = path.endsWith("/" + name) ? path.substring(0, path.lastIndexOf("/" + name)) : path;
+            checkPath(parentPath);
+            return dao.create(parentPath, t);
+        } catch (RepositoryException e) {
+            throw new JcrMappingException("Unable to create the parent path " + path, e);
+        }
     }
 
     private void checkPath(String path) throws RepositoryException {

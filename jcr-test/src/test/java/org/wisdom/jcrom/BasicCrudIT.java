@@ -22,6 +22,7 @@ package org.wisdom.jcrom;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.modeshape.jcr.query.JcrQuery;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.ow2.chameleon.testing.helpers.OSGiHelper;
@@ -113,6 +114,56 @@ public class BasicCrudIT extends WisdomTest {
         helloB = helloCrud.findByPath("/entities/todo/b");
         Assert.assertNotNull(helloB);
         Assert.assertEquals("value2", helloB.getValue());
+    }
+
+    /**
+     * Given an entity with name "a", stored at path /entities/todo/a
+     * We should ensure that both cases below are well saved:
+     * Case 1 :
+     * name : b
+     * path : /entities/todo
+     * Is well stored to /entities/todo/b
+     * Case 2 :
+     * name : c
+     * path : /entities/todo/c
+     * Is well stored to /entities/todo/c
+     */
+    @Test
+    public void assertThatEntityWithItsOwnPathWhichNotExistIsWellCreated() {
+        JcrCrud<Hello, String> helloCrud = (JcrCrud<Hello, String>) osGiUtils.getCrud(Hello.class);
+        Assert.assertNotNull(helloCrud);
+        Hello helloC = new Hello();
+        helloC.setPath("/entities/todo");
+        helloC.setName("c");
+        helloC.setValue("valueC");
+        helloCrud.save(helloC);
+
+        Hello helloD = new Hello();
+        helloD.setPath("/entities/todo/d");
+        helloD.setName("d");
+        helloD.setValue("valueD");
+        helloCrud.save(helloD);
+
+        Assert.assertNotNull(helloCrud.findByPath("/entities/todo/c"));
+        Assert.assertNotNull(helloCrud.findOne("c"));
+        Assert.assertNotNull(helloCrud.findOneByQuery("SELECT * from [test:hello] WHERE [jcr:name]='c' AND [jcr:path]='/entities/todo/c'", JcrQuery.JCR_SQL2));
+
+        helloD = helloCrud.findByPath("/entities/todo/d");
+        Assert.assertNotNull(helloD);
+        Assert.assertEquals("valueD", helloD.getValue());
+        Assert.assertNotNull(helloCrud.findOne("d"));
+        Assert.assertNotNull(helloCrud.findOneByQuery("SELECT * from [test:hello] WHERE [jcr:name]='d' AND [jcr:path]='/entities/todo/d'", JcrQuery.JCR_SQL2));
+
+        Hello helloE = new Hello();
+        helloE.setPath("/entities/todo/e/e");
+        helloE.setName("e");
+        helloE.setValue("valueE");
+        helloCrud.save(helloE);
+        helloE = helloCrud.findByPath("/entities/todo/e/e");
+        Assert.assertNotNull(helloE);
+        Assert.assertEquals("valueE", helloE.getValue());
+        Assert.assertNotNull(helloCrud.findOne("e"));
+        Assert.assertNotNull(helloCrud.findOneByQuery("SELECT * from [test:hello] WHERE [jcr:name]='e' AND [jcr:path]='/entities/todo/e/e'", JcrQuery.JCR_SQL2));
     }
 
 }
