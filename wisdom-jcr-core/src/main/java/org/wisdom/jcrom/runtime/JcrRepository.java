@@ -24,9 +24,11 @@ import org.jcrom.Jcrom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wisdom.api.configuration.ApplicationConfiguration;
+import org.wisdom.api.http.Context;
 import org.wisdom.api.model.Crud;
 import org.wisdom.api.model.Repository;
 import org.wisdom.jcrom.conf.JcromConfiguration;
+import org.wisdom.jcrom.service.AutoCloseableSessionProvider;
 import org.wisdom.jcrom.service.JcromProvider;
 
 import javax.jcr.RepositoryException;
@@ -43,13 +45,13 @@ import java.util.HashSet;
 @Provides(specifications = JcrRepository.class)
 public class JcrRepository implements Repository<javax.jcr.Repository> {
 
-    private Logger logger = LoggerFactory.getLogger(JcrRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(JcrRepository.class);
+
+    protected static ThreadLocal<Session> SESSION = new ThreadLocal<>();
 
     private javax.jcr.Repository repository;
 
     private JcromConfiguration jcromConfiguration;
-
-    private Session session;
 
     @Requires
     ApplicationConfiguration applicationConfiguration;
@@ -59,6 +61,9 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
 
     @Requires
     JcromProvider jcromProvider;
+
+    @Requires
+    AutoCloseableSessionProvider autoCloseableSessionProvider;
 
     private Collection<Crud<?, ?>> crudServices = new HashSet<>();
 
@@ -71,7 +76,6 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
                 applicationConfiguration.getConfiguration("jcr")
                         .getConfiguration(jcromConfiguration.getRepository()).asMap());
         Thread.currentThread().setContextClassLoader(JcrRepository.class.getClassLoader());
-        this.session = repository.login();
     }
 
     @Invalidate
@@ -83,7 +87,28 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     }
 
     public Session getSession() {
-        return session;
+        org.wisdom.api.http.Context context = Context.CONTEXT.get();
+        if (context == null) {
+            // we are not in the context of a request, the session should have been opened manually
+            if (SESSION.get() == null) {
+                throw new IllegalStateException("Please open a session using JcrRepository#login() before accessing the " +
+                        "session and make sure to close it with JcrRepository#logout() after you are done with the session.");
+            }
+            return SESSION.get();
+        } else if (SESSION.get() == null) {
+            // we are in the context of a request, perform automatic login
+            login();
+        }
+        return SESSION.get();
+    }
+
+    private Session createSession() {
+        try {
+            return repository.login();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override
@@ -117,7 +142,7 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     }
 
     public Jcrom createJcrom() {
-        return jcromProvider.getJcrom(jcromConfiguration, this.session);
+        return jcromProvider.getJcrom(jcromConfiguration);
     }
 
     public boolean addCrudService(Crud<?, ?> arg0) {
@@ -127,4 +152,31 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
     public boolean removeCrudService(Crud<?, ?> arg0) {
         return crudServices.remove(arg0);
     }
+
+    public AutoCloseable login() {
+        if (SESSION.get() == null) {
+            logger.debug("Opening JCR session");
+            Session session = autoCloseableSessionProvider.createAutoCloseableSession(createSession());
+            SESSION.set(session);
+        } else {
+            logger.debug("Already logged in for this thread, using existing session");
+        }
+        return (AutoCloseableSession) SESSION.get();
+    }
+
+    public static void cleanUpRequestContextSession() {
+        try {
+            logger.debug("Closing jcr session");
+            if (SESSION.get() != null) {
+                SESSION.get().logout();
+                SESSION.remove();
+                logger.info("Jcr session closed");
+            } else {
+                logger.debug("No jcr session was opened");
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
 }

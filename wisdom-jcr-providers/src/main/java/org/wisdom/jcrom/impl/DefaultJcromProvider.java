@@ -1,4 +1,4 @@
-package org.wisdom.jcrom.runtime;
+package org.wisdom.jcrom.impl;
 /*
  * #%L
  * Wisdom-Framework
@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.wisdom.jcrom.conf.JcromConfiguration;
 import org.wisdom.jcrom.service.JcromProvider;
 
-import javax.jcr.Session;
-
 /**
  * Default implementation of {@link org.wisdom.jcrom.service.JcromProvider} <br>
  * Created at 06/05/2015 17:50.<br>
@@ -50,7 +48,7 @@ public class DefaultJcromProvider implements JcromProvider {
     }
 
     @Override
-    public Jcrom getJcrom(JcromConfiguration jcromConfiguration, Session session) {
+    public Jcrom getJcrom(JcromConfiguration jcromConfiguration) {
         return new Jcrom(jcromConfiguration.isCleanNames(), jcromConfiguration.isDynamicInstantiation());
     }
 }
