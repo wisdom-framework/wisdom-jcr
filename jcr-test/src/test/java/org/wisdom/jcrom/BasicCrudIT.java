@@ -19,6 +19,7 @@
  */
 package org.wisdom.jcrom;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import org.ow2.chameleon.testing.helpers.OSGiHelper;
 import org.wisdom.api.model.Crud;
 import org.wisdom.jcrom.entity1.Hello;
 import org.wisdom.jcrom.object.JcrCrud;
+import org.wisdom.jcrom.runtime.JcrRepository;
 import org.wisdom.test.parents.WisdomTest;
 
 import javax.inject.Inject;
@@ -47,10 +49,21 @@ public class BasicCrudIT extends WisdomTest {
 
     OSGiUtils osGiUtils;
 
+    @Inject
+    JcrRepository jcrRepository;
+
+    AutoCloseable session;
+
     @Before
     public void setUp() throws InvalidSyntaxException, InterruptedException {
         osgi = new OSGiHelper(context);
         osGiUtils = new OSGiUtils(osgi);
+        session = jcrRepository.login();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        session.close();
     }
 
     @Test

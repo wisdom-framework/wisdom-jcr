@@ -23,6 +23,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.felix.ipojo.annotations.Requires;
 import org.apache.felix.ipojo.annotations.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wisdom.api.DefaultController;
 import org.wisdom.api.annotations.*;
 import org.wisdom.api.http.Result;
@@ -45,6 +47,8 @@ import static org.wisdom.api.http.HttpMethod.*;
 @Path("/list")
 public class TodoController extends DefaultController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TodoController.class);
+
     @Model(TodoList.class)
     private Crud<TodoList, String> listCrud;
 
@@ -57,44 +61,47 @@ public class TodoController extends DefaultController {
 
     @Validate
     public void start() throws HasBeenRollBackException {
+        try (AutoCloseable session = jcrRepository.login()) {
+            if (listCrud.count() == 0) {
+                logger().info("Adding default item");
+                Todo todo = new Todo();
+                todo.setId(UUID.randomUUID().toString());
+                todo.setContent("Check out this awesome todo demo!");
+                todo.setDone(true);
 
-        if (listCrud.count() == 0) {
-            logger().info("Adding default item");
-            Todo todo = new Todo();
-            todo.setId(UUID.randomUUID().toString());
-            todo.setContent("Check out this awesome todo demo!");
-            todo.setDone(true);
 
+                TodoList list = new TodoList();
+                list.setId(UUID.randomUUID().toString());
+                list.setName("Todo-List");
+                list.setTodos(Lists.newArrayList(todo));
+                list.setOwner("foo");
+                listCrud.save(list);
 
-            TodoList list = new TodoList();
-            list.setId(UUID.randomUUID().toString());
-            list.setName("Todo-List");
-            list.setTodos(Lists.newArrayList(todo));
-            list.setOwner("foo");
-            listCrud.save(list);
+                try {
+                    Node node = jcrRepository.getSession().getNode(todo.getPath());
+                    JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 1");
+                    JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 2");
+                    JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 3");
+                } catch (RepositoryException e) {
+                    logger().error(e.getMessage(), e);
+                }
 
-            try {
-                Node node = jcrRepository.getSession().getNode(todo.getPath());
-                JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 1");
-                JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 2");
-                JcrTools.registerAndAddMixinType(jcrRepository.getSession(), node, "Mixin 3");
-            } catch (RepositoryException e) {
-                logger().error(e.getMessage(), e);
+                logger().info("Item added:");
+                logger().info("todo : {} - {}", todo, todo.getId());
+                logger().info("list : {} - {}", list, list.getId());
+
+                for (TodoList l : listCrud.findAll()) {
+                    logger().info("List {} with {} items ({})", l.getName(), l.getTodos().size(), l.getOwner());
+                }
+
+            } else {
+                logger().info("Existing items : {}", listCrud.count());
+                for (TodoList list : listCrud.findAll()) {
+                    logger().info("List {} with {} items", list.getName(), list.getTodos().size());
+                }
             }
-
-            logger().info("Item added:");
-            logger().info("todo : {} - {}", todo, todo.getId());
-            logger().info("list : {} - {}", list, list.getId());
-
-            for (TodoList l : listCrud.findAll()) {
-                logger().info("List {} with {} items ({})", l.getName(), l.getTodos().size(), l.getOwner());
-            }
-
-        } else {
-            logger().info("Existing items : {}", listCrud.count());
-            for (TodoList list : listCrud.findAll()) {
-                logger().info("List {} with {} items", list.getName(), list.getTodos().size());
-            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 

@@ -60,16 +60,12 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     protected String nodeType;
 
-    protected final AbstractJcrDAO<T> dao;
-
     private final Jcrom jcrom;
 
     protected JcrCrudService(JcrRepository repository, Jcrom jcrom, Class<T> entityClass) throws RepositoryException {
         this.repository = repository;
         this.jcrom = jcrom;
         this.entityClass = entityClass;
-        dao = new AbstractJcrDAO<T>(entityClass, repository.getSession(), jcrom) {
-        };
         JcrNode jcrNode = ReflectionUtils.getJcrNodeAnnotation(entityClass);
         if (jcrNode != null) {
             nodeType = jcrNode.nodeType();
@@ -78,6 +74,15 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
             throw new JcrMappingException(
                     "Can not use JcrCrudService on a class with no node type, please annotate the class " + entityClass + " with the JcrNode annotations and specify its nodeType");
         }
+    }
+
+    public AbstractJcrDAO<T> getDao() {
+        return createDao();
+    }
+
+    private AbstractJcrDAO<T> createDao() {
+        return  new AbstractJcrDAO<T>(entityClass, repository.getSession(), jcrom) {
+        };
     }
 
     @Override
@@ -92,13 +97,13 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     @Override
     public T delete(T t) {
-        dao.remove(jcrom.getPath(t));
+        getDao().remove(jcrom.getPath(t));
         return t;
     }
 
     @Override
     public void delete(String s) {
-        dao.remove(s);
+        getDao().remove(s);
     }
 
     @Override
@@ -133,7 +138,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         if (path != null) {
             try {
                 if (path.endsWith("/" + name) && repository.getSession().nodeExists(path)) {
-                    return dao.update(t);
+                    return getDao().update(t);
                 } else {
                     if (repository.getSession().nodeExists(path.endsWith("/") ? path + name : path + "/" + name)) {
                         throw new JcrMappingException("Unable to save entity. You're trying to update an existing entity with the wrong path [path=" + path + ",name=" + name + "]");
@@ -146,7 +151,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
         try {
             String parentPath = path.endsWith("/" + name) ? path.substring(0, path.lastIndexOf("/" + name)) : path;
             checkPath(parentPath);
-            return dao.create(parentPath, t);
+            return getDao().create(parentPath, t);
         } catch (RepositoryException e) {
             throw new JcrMappingException("Unable to create the parent path " + path, e);
         }
@@ -214,7 +219,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
     }
 
     protected T getEntity(String path, NodeFilter filter) {
-        return dao.get(path, filter);
+        return getDao().get(path, filter);
     }
 
     @Override
@@ -309,7 +314,7 @@ public class JcrCrudService<T> implements JcrCrud<T, String> {
 
     @Override
     public T findByPath(String absolutePath) {
-        return dao.get(absolutePath);
+        return getDao().get(absolutePath);
     }
 
     @Override

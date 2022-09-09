@@ -2,7 +2,7 @@
  * #%L
  * Wisdom-Framework
  * %%
- * Copyright (C) 2013 - 2015 Wisdom Framework
+ * Copyright (C) 2013 - 2022 Wisdom Framework
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,12 @@
  */
 package org.wisdom.jcrom.service;
 
-import org.jcrom.Jcrom;
-import org.wisdom.jcrom.conf.JcromConfiguration;
+import org.wisdom.jcrom.runtime.AutoCloseableSession;
 
-/**
- * Service for providing instance of Jcrom.
- * <br>
- * Created at 06/05/2015 17:59.<br>
- *
- * @author Bastien
- */
+import javax.jcr.Session;
 
-public interface JcromProvider {
+public interface AutoCloseableSessionProvider {
 
-    Jcrom getJcrom(JcromConfiguration jcromConfiguration);
+    AutoCloseableSession createAutoCloseableSession(Session session);
+
 }

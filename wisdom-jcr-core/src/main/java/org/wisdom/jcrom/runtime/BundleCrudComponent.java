@@ -20,13 +20,12 @@
 package org.wisdom.jcrom.runtime;
 
 import java.net.URL;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.jcrom.Jcrom;
 import org.osgi.framework.Bundle;
@@ -81,6 +80,7 @@ public class BundleCrudComponent {
     private Jcrom getJcrom() {
     	if(jcrom==null) {
     		jcrom = createJcrom();
+            jcrom.setSessionFactory(() -> (Session) repository.login());
     	}
     	return jcrom;
 	}
