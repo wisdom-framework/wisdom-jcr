@@ -38,6 +38,8 @@ import java.security.AccessControlException;
 
 public class AutoCloseableSession implements Session, AutoCloseable {
 
+    private static final Logger logger = LoggerFactory.getLogger(AutoCloseableSession.class);
+
     private final Session session;
 
     public AutoCloseableSession(Session session) {
@@ -217,6 +219,11 @@ public class AutoCloseableSession implements Session, AutoCloseable {
     @Override
     public void logout() {
         session.logout();
+        try {
+            close();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     @Override

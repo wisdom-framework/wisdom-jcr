@@ -168,9 +168,11 @@ public class JcrRepository implements Repository<javax.jcr.Repository> {
         try {
             logger.debug("Closing jcr session");
             if (SESSION.get() != null) {
-                SESSION.get().logout();
+                if (SESSION.get().isLive()) {
+                    SESSION.get().logout();
+                }
                 SESSION.remove();
-                logger.info("Jcr session closed");
+                logger.debug("Jcr session closed");
             } else {
                 logger.debug("No jcr session was opened");
             }
